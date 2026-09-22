@@ -1,0 +1,98 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// A single, unified model that handles both "what am I doing RIGHT NOW"
+// (live tracking) and "what I plan to do later" (scheduled items).
+model Activity {
+  id            String   @id @default(cuid())
+
+  // What the user is doing — e.g. "Walking in the park", "Therapy session"
+  title         String
+
+  // Optional longer description
+  notes         String?
+
+  // Category groups activities for the insights dashboard
+  // movement | mindfulness | connection | rest | creativity | learning | therapy | nutrition | other
+  category      String   @default("other")
+
+  // The calendar day this activity belongs to (YYYY-MM-DD)
+  // Stored separately from timestamps so the user can back-fill or plan ahead
+  date          String
+
+  // When the activity started (or is planned to start). ISO string.
+  startTime     String
+
+  // When the activity ended. NULL while it's still running or planned.
+  endTime       String?
+
+  // Duration in minutes. Can be entered manually or computed from start/end.
+  durationMin   Int?
+
+  // status: planned | active | completed | skipped
+  status        String   @default("planned")
+
+  // Healing reflection
+  // helped | neutral | hindered | unsure
+  healingImpact String?
+
+  // Free-text reflection on how this moved the user toward (or away from) healing
+  healingNote   String?
+
+  // Mood before/after on a 1-5 scale (1 = low, 5 = high)
+  moodBefore    Int?
+  moodAfter     Int?
+
+  // Reminder: how many minutes before startTime to send a notification.
+  // NULL = no reminder. 0 = notify exactly at startTime. 5 = 5 min before, etc.
+  reminderMin   Int?
+
+  // Set to true once the reminder for this activity has fired (so we don't re-fire
+  // on every poll). Reset to false if the activity's startTime gets pushed out.
+  reminderFired Boolean  @default(false)
+
+  // ── Recurrence ──────────────────────────────────────────────────────────────
+  // For recurring activities we use a "template + instances" pattern in a single
+  // table to keep things simple:
+  //   - The original activity has `isRecurrenceTemplate = true` and a `recurrenceRule`.
+  //   - Each generated occurrence is its own Activity row with `recurrenceTemplateId`
+  //     pointing back to the template, and `isRecurrenceTemplate = false`.
+  // Editing or deleting a template affects future occurrences; editing/deleting
+  // a single occurrence only affects that one.
+
+  // If true, this row is a recurrence template (not a concrete occurrence).
+  isRecurrenceTemplate Boolean @default(false)
+
+  // For occurrences, the ID of the template they were generated from.
+  // For templates, NULL.
+  recurrenceTemplateId String?
+
+  // RRULE-style recurrence rule. We support a small subset:
+  //   freq: daily | weekly | monthly
+  //   interval: every N (e.g. every 2 weeks)
+  //   weekdays: array of weekday numbers (0=Sun…6=Sat) for weekly freq
+  //   endDate: optional YYYY-MM-DD when recurrence stops
+  // Stored as a JSON string.
+  recurrenceRule String?
+
+  // Last date (YYYY-MM-DD) we expanded this template into concrete occurrences,
+  // so we don't regenerate the same ones.
+  recurrenceExpandedThrough String?
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([date])
+  @@index([status])
+  @@index([recurrenceTemplateId])
+  @@index([isRecurrenceTemplate])
+}

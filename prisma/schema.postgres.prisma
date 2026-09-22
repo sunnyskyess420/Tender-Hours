@@ -1,0 +1,59 @@
+// Postgres-ready Prisma schema for Vercel deployment.
+//
+// Vercel's serverless environment doesn't have persistent filesystem, so SQLite
+// won't work. Use Vercel Postgres instead. To deploy on Vercel:
+//
+//   1. Copy this file over prisma/schema.prisma:
+//        cp prisma/schema.postgres.prisma prisma/schema.prisma
+//
+//   2. Create a Vercel Postgres database in your Vercel project dashboard.
+//      Copy the resulting connection string (starts with postgres://...).
+//
+//   3. Set DATABASE_URL in your Vercel project's environment variables
+//      to that connection string.
+//
+//   4. Run `bun run db:push` once locally with DATABASE_URL set to the
+//      production Postgres URL to create the tables.
+//
+//   5. Push to GitHub and let Vercel auto-deploy.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Activity {
+  id            String   @id @default(cuid())
+
+  title         String
+  notes         String?
+  category      String   @default("other")
+  date          String
+  startTime     String
+  endTime       String?
+  durationMin   Int?
+  status        String   @default("planned")
+  healingImpact String?
+  healingNote   String?
+  moodBefore    Int?
+  moodAfter     Int?
+  reminderMin   Int?
+  reminderFired Boolean  @default(false)
+
+  isRecurrenceTemplate Boolean @default(false)
+  recurrenceTemplateId String?
+  recurrenceRule String?
+  recurrenceExpandedThrough String?
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([date])
+  @@index([status])
+  @@index([recurrenceTemplateId])
+  @@index([isRecurrenceTemplate])
+}
