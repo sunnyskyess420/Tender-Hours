@@ -254,6 +254,7 @@ Personal project — all rights reserved. Use it, fork it, share it, but please 
 
 ---
 
+
 ## Acknowledgments
 
 Built with care for people doing the slow work of healing. Be tender with yourself.
