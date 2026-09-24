@@ -33,6 +33,15 @@ const LS_FIRED_KEY = 'healing:firedReminderIds' // legacy: array of activity ids
 const LS_SNOOZED_KEY = 'healing:snoozedReminders' // { [id]: msEpoch }
 const LS_DAILY_KEY = 'tender:dailyCheckIn' // DailyCheckInSettings JSON
 const LS_EOD_KEY = 'tender:endOfDay' // EndOfDaySettings JSON
+const LS_NOTIF_KEY = 'tender:notificationsEnabled' // NotificationsEnabledFlag JSON
+
+/** Persisted record of the user's opt-in, so the app remembers their choice
+ *  even when the browser reports `Notification.permission === 'default'` again
+ *  after a restart (e.g. site-data resets, iOS PWA quirks, storage eviction). */
+interface NotificationsEnabledFlag {
+  enabled: boolean
+  at: number // ms epoch when the choice was made
+}
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
@@ -67,6 +76,12 @@ function todayDateStr(): string {
 
 export function useReminders() {
   const [permission, setPermission] = useState<NotificationPermissionState>('default')
+  // Persisted user intent: true once the user has granted notifications in the app.
+  const [notificationsOn, setNotificationsOn] = useState(false)
+  // Becomes true after the init effect has restored saved settings from
+  // localStorage. Persist effects are gated on this so a fresh mount never
+  // overwrites stored settings with the useState defaults.
+  const [hydrated, setHydrated] = useState(false)
   const [pending, setPending] = useState<PendingReminder[]>([])
   const [daily, setDaily] = useState<DailyCheckInSettings>({
     enabled: false,
@@ -87,11 +102,9 @@ export function useReminders() {
   // ─── Initialise state from the browser ──────────────────────────────────────
   useEffect(() => {
     if (typeof window === 'undefined') return
-    if (!('Notification' in window)) {
-      setPermission('unsupported')
-      return
-    }
-    setPermission(Notification.permission as NotificationPermissionState)
+
+    // Always restore saved settings FIRST — even when the Notification API is
+    // missing — so nothing below can wipe them back to defaults.
     setDaily(
       readJSON<DailyCheckInSettings>(LS_DAILY_KEY, {
         enabled: false,
@@ -106,19 +119,66 @@ export function useReminders() {
         lastFiredDate: null,
       })
     )
-    setPending(readJSON<PendingReminder[]>(LS_FIRED_KEY, []).map(() => ({ /* placeholder */ } as PendingReminder)).filter(Boolean))
+    const flag = readJSON<NotificationsEnabledFlag | null>(LS_NOTIF_KEY, null)
+    setNotificationsOn(Boolean(flag?.enabled))
+    setHydrated(true)
+
+    // Best effort: ask the browser not to evict our site data (localStorage),
+    // which is what keeps reminder settings alive between launches.
+    try {
+      navigator.storage?.persist?.().catch(() => {})
+    } catch {
+      // ignore — persistence request is optional
+    }
+
+    if (!('Notification' in window)) {
+      setPermission('unsupported')
+      return
+    }
+    setPermission(Notification.permission as NotificationPermissionState)
+
+    // Auto-restore: if the user already opted in but the browser is reporting
+    // 'default' again after a restart, re-request permission on the first user
+    // gesture so they don't have to find the Enable button. Browsers ignore
+    // permission requests without a gesture, so we wait for one.
+    if (flag?.enabled && Notification.permission === 'default') {
+      const reRequest = () => {
+        document.removeEventListener('pointerdown', reRequest)
+        document.removeEventListener('keydown', reRequest)
+        Notification.requestPermission()
+          .then((result) => {
+            setPermission(result as NotificationPermissionState)
+            if (result === 'granted') {
+              writeJSON(LS_NOTIF_KEY, { enabled: true, at: Date.now() })
+              setNotificationsOn(true)
+            } else if (result === 'denied') {
+              // User actively blocked it — stop auto-restoring in future sessions.
+              writeJSON(LS_NOTIF_KEY, { enabled: false, at: Date.now() })
+              setNotificationsOn(false)
+            }
+          })
+          .catch(() => {})
+      }
+      document.addEventListener('pointerdown', reRequest, { once: true })
+      document.addEventListener('keydown', reRequest, { once: true })
+    }
   }, [])
 
-  // Persist pending reminders & daily/EOD settings whenever they change
+  // Persist pending reminders & daily/EOD settings whenever they change.
+  // Gated on `hydrated` so the mount-time run (which still holds the useState
+  // defaults) never overwrites the values restored from localStorage.
   useEffect(() => {
+    if (!hydrated) return
     writeJSON(LS_SNOOZED_KEY, Object.fromEntries(pending.map((p) => [p.id, p.snoozedUntil])))
-  }, [pending])
+  }, [pending, hydrated])
   useEffect(() => {
+    if (!hydrated) return
     writeJSON(LS_DAILY_KEY, daily)
-  }, [daily])
+  }, [daily, hydrated])
   useEffect(() => {
+    if (!hydrated) return
     writeJSON(LS_EOD_KEY, eod)
-  }, [eod])
+  }, [eod, hydrated])
 
   // ─── Request permission ────────────────────────────────────────────────────
   const requestPermission = useCallback(async () => {
@@ -130,6 +190,13 @@ export function useReminders() {
       const result = await Notification.requestPermission()
       setPermission(result as NotificationPermissionState)
       if (result === 'granted') {
+        // Remember the opt-in so we can restore it automatically next launch.
+        writeJSON(LS_NOTIF_KEY, { enabled: true, at: Date.now() })
+        setNotificationsOn(true)
+        // Best effort: make this origin's storage persistent too.
+        try {
+          navigator.storage?.persist?.().catch(() => {})
+        } catch {}
         // Fire a tiny "you're set" notification so they know it works
         try {
           new Notification('Reminders are on', {
@@ -139,6 +206,11 @@ export function useReminders() {
         } catch {
           // Some browsers throw if icon is missing — fine.
         }
+      } else {
+        // 'default' (dismissed) or 'denied' — record that notifications are off
+        // so we don't auto-restore against the user's wishes.
+        writeJSON(LS_NOTIF_KEY, { enabled: false, at: Date.now() })
+        setNotificationsOn(false)
       }
       return result as NotificationPermissionState
     } catch {
@@ -346,6 +418,7 @@ export function useReminders() {
   return {
     permission,
     requestPermission,
+    notificationsOn,
     pending: visiblePending,
     snooze,
     dismiss,

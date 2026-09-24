@@ -192,6 +192,8 @@ function ReminderBell({
                   <p className="text-sm text-stone-700">
                     {reminders.permission === 'unsupported'
                       ? 'Browser notifications aren’t supported here, but in-app reminders will still appear in this panel.'
+                      : reminders.notificationsOn
+                      ? 'Notifications were on before — tap below to switch them back on for this device. Your reminder settings are saved.'
                       : 'Turn on browser notifications to be nudged even when this tab is in the background.'}
                   </p>
                   {reminders.permission !== 'unsupported' && (
@@ -199,7 +201,7 @@ function ReminderBell({
                       onClick={() => reminders.requestPermission()}
                       className="mt-3 w-full px-3 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-medium"
                     >
-                      Enable notifications
+                      {reminders.notificationsOn ? 'Restore notifications' : 'Enable notifications'}
                     </button>
                   )}
                 </div>
@@ -491,11 +493,13 @@ function ReminderSettingsCard({ reminders }: { reminders: ReturnType<typeof useR
           <p className="text-sm font-medium text-stone-700">Browser notifications</p>
           <p className="text-xs text-stone-500 mt-0.5">
             {reminders.permission === 'granted'
-              ? 'On — you’ll be nudged even if this tab is in the background.'
+              ? 'On — you’ll be nudged even if this tab is in the background. Your choice is saved for next time.'
               : reminders.permission === 'denied'
               ? 'Blocked in your browser. Use the in-app reminders panel instead.'
               : reminders.permission === 'unsupported'
               ? 'Not supported in this browser. In-app reminders will still work.'
+              : reminders.notificationsOn
+              ? 'You turned these on before — tap Restore and they’ll stay on for future visits too.'
               : 'Allow notifications to get nudged before each activity.'}
           </p>
         </div>
@@ -505,7 +509,11 @@ function ReminderSettingsCard({ reminders }: { reminders: ReturnType<typeof useR
             disabled={reminders.permission === 'denied'}
             className="px-3 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-medium shrink-0"
           >
-            {reminders.permission === 'denied' ? 'Blocked' : 'Enable'}
+            {reminders.permission === 'denied'
+              ? 'Blocked'
+              : reminders.notificationsOn
+              ? 'Restore'
+              : 'Enable'}
           </button>
         )}
         {reminders.permission === 'granted' && (
