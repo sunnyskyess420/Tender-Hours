@@ -1014,7 +1014,17 @@ function StartActivityCard({
   )
 }
 
-// Quick log: log a completed activity after the fact, with start time + duration.
+// ── small helpers for the start/finish time pickers ─────────────────────────
+function hhmmToMinutes(hhmm: string): number {
+  const [h, m] = hhmm.split(':').map(Number)
+  return (h || 0) * 60 + (m || 0)
+}
+function minutesToHHMM(total: number): string {
+  const t = ((total % 1440) + 1440) % 1440
+  return `${String(Math.floor(t / 60)).padStart(2, '0')}:${String(t % 60).padStart(2, '0')}`
+}
+
+// Quick log: log a completed activity after the fact, with start + finish time.
 function QuickLogCard({ onSaved }: { onSaved: () => void }) {
   const today = todayISODate()
   const [title, setTitle] = useState('')
@@ -1024,16 +1034,31 @@ function QuickLogCard({ onSaved }: { onSaved: () => void }) {
     d.setMinutes(d.getMinutes() - 30)
     return timeHHMMFromISO(d.toISOString())
   })
-  const [durationMin, setDurationMin] = useState(30)
+  const [finishTime, setFinishTime] = useState(() => timeHHMMFromISO(new Date().toISOString()))
   const [healingImpact, setHealingImpact] = useState<
     'helped' | 'neutral' | 'hinder' | 'unsure'
   >('helped')
   const [healingNote, setHealingNote] = useState('')
 
+  // Work out the finish from the two times — no arithmetic for the user. If the
+  // finish looks earlier than the start, we assume it ran past midnight.
+  function computeTimes() {
+    const startISO = isoFromLocal(today, startTime)
+    const startMs = new Date(startISO).getTime()
+    let endMs = new Date(isoFromLocal(today, finishTime)).getTime()
+    if (endMs <= startMs) endMs += 24 * 60 * 60 * 1000
+    return {
+      startISO,
+      endISO: new Date(endMs).toISOString(),
+      durationMin: Math.max(1, Math.round((endMs - startMs) / 60000)),
+    }
+  }
+
+  const { durationMin } = computeTimes()
+
   async function save() {
     if (!title.trim()) return
-    const startISO = isoFromLocal(today, startTime)
-    const endISO = new Date(new Date(startISO).getTime() + durationMin * 60000).toISOString()
+    const { startISO, endISO, durationMin } = computeTimes()
     await api('/api/activities', {
       method: 'POST',
       body: JSON.stringify({
@@ -1061,7 +1086,7 @@ function QuickLogCard({ onSaved }: { onSaved: () => void }) {
         </div>
         <div>
           <h2 className="text-lg font-semibold text-stone-800">Quick log a past activity</h2>
-          <p className="text-xs text-stone-500">Already finished something? Log it with a start time and duration.</p>
+          <p className="text-xs text-stone-500">Already finished something? Pick a start and finish time — the duration works itself out.</p>
         </div>
       </div>
       <div className="grid sm:grid-cols-2 gap-3">
@@ -1079,21 +1104,25 @@ function QuickLogCard({ onSaved }: { onSaved: () => void }) {
           <input
             type="time"
             value={startTime}
-            onChange={(e) => setStartTime(e.target.value)}
+            onChange={(e) => {
+              const v = e.target.value
+              setStartTime(v)
+              if (hhmmToMinutes(finishTime) <= hhmmToMinutes(v)) setFinishTime(minutesToHHMM(hhmmToMinutes(v) + 30))
+            }}
             className="mt-1 w-full rounded-xl border border-stone-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300"
           />
         </div>
         <div>
           <label className="text-xs uppercase tracking-wide text-stone-500 font-semibold">
-            Duration (minutes)
+            Finish time
           </label>
           <input
-            type="number"
-            min={1}
-            value={durationMin}
-            onChange={(e) => setDurationMin(Math.max(1, Number(e.target.value)))}
+            type="time"
+            value={finishTime}
+            onChange={(e) => setFinishTime(e.target.value)}
             className="mt-1 w-full rounded-xl border border-stone-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300"
           />
+          <p className="mt-1 text-xs text-stone-400">= {formatDuration(durationMin)} — no maths needed</p>
         </div>
         <div className="sm:col-span-2">
           <label className="text-xs uppercase tracking-wide text-stone-500 font-semibold">
@@ -1533,14 +1562,29 @@ function PlannedActivityForm({
   const [title, setTitle] = useState('')
   const [category, setCategory] = useState<ActivityCategory>('mindfulness')
   const [time, setTime] = useState('09:00')
-  const [durationMin, setDurationMin] = useState(30)
+  const [endTime, setEndTime] = useState('09:30')
   const [notes, setNotes] = useState('')
   const [reminderMin, setReminderMin] = useState<number | null>(5)
   const [recurrenceRule, setRecurrenceRule] = useState<RecurrenceRule | null>(null)
 
+  // Duration comes from the two times — no maths for the user.
+  function computeTimes() {
+    const startTime = isoFromLocal(date, time)
+    const startMs = new Date(startTime).getTime()
+    let endMs = new Date(isoFromLocal(date, endTime)).getTime()
+    if (endMs <= startMs) endMs += 24 * 60 * 60 * 1000
+    return {
+      startTime,
+      endTime: new Date(endMs).toISOString(),
+      durationMin: Math.max(1, Math.round((endMs - startMs) / 60000)),
+    }
+  }
+
+  const { durationMin } = computeTimes()
+
   async function save() {
     if (!title.trim()) return
-    const startTime = isoFromLocal(date, time)
+    const { startTime, endTime, durationMin } = computeTimes()
     await api('/api/activities', {
       method: 'POST',
       body: JSON.stringify({
@@ -1548,6 +1592,7 @@ function PlannedActivityForm({
         category,
         date,
         startTime,
+        endTime,
         durationMin,
         notes: notes.trim() || null,
         status: 'planned',
@@ -1571,26 +1616,30 @@ function PlannedActivityForm({
       <div className="grid grid-cols-2 gap-3">
         <div>
           <label className="text-xs uppercase tracking-wide text-stone-500 font-semibold">
-            When
+            Starts
           </label>
           <input
             type="time"
             value={time}
-            onChange={(e) => setTime(e.target.value)}
+            onChange={(e) => {
+              const v = e.target.value
+              setTime(v)
+              if (hhmmToMinutes(endTime) <= hhmmToMinutes(v)) setEndTime(minutesToHHMM(hhmmToMinutes(v) + 30))
+            }}
             className="mt-1 w-full rounded-xl border border-stone-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300"
           />
         </div>
         <div>
           <label className="text-xs uppercase tracking-wide text-stone-500 font-semibold">
-            Duration (min)
+            Ends
           </label>
           <input
-            type="number"
-            min={1}
-            value={durationMin}
-            onChange={(e) => setDurationMin(Math.max(1, Number(e.target.value)))}
+            type="time"
+            value={endTime}
+            onChange={(e) => setEndTime(e.target.value)}
             className="mt-1 w-full rounded-xl border border-stone-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300"
           />
+          <p className="mt-1 text-xs text-stone-400">= {formatDuration(durationMin)}</p>
         </div>
       </div>
       <div>
@@ -1709,7 +1758,11 @@ function EditDialog({
   const [category, setCategory] = useState<ActivityCategory>(a.category as ActivityCategory)
   const [date, setDate] = useState(a.date)
   const [time, setTime] = useState(timeHHMMFromISO(a.startTime))
-  const [durationMin, setDurationMin] = useState(a.durationMin ?? 30)
+  const [endTime, setEndTime] = useState(() =>
+    a.endTime
+      ? timeHHMMFromISO(a.endTime)
+      : timeHHMMFromISO(new Date(new Date(a.startTime).getTime() + (a.durationMin ?? 30) * 60000).toISOString())
+  )
   const [healingImpact, setHealingImpact] = useState<
     'helped' | 'neutral' | 'hinder' | 'unsure' | null
   >((a.healingImpact as any) ?? null)
@@ -1721,12 +1774,24 @@ function EditDialog({
   )
   const isTemplate = a.isRecurrenceTemplate
 
-  async function save() {
+  // Duration comes from the two times — no maths for the user.
+  function computeTimes() {
     const startTime = isoFromLocal(date, time)
-    const endTime =
-      status === 'completed'
-        ? new Date(new Date(startTime).getTime() + durationMin * 60000).toISOString()
-        : null
+    const startMs = new Date(startTime).getTime()
+    let endMs = new Date(isoFromLocal(date, endTime)).getTime()
+    if (endMs <= startMs) endMs += 24 * 60 * 60 * 1000
+    return {
+      startTime,
+      endTime: new Date(endMs).toISOString(),
+      durationMin: Math.max(1, Math.round((endMs - startMs) / 60000)),
+    }
+  }
+
+  const { durationMin } = computeTimes()
+
+  async function save() {
+    const { startTime, endTime: computedEnd, durationMin } = computeTimes()
+    const endTime = status === 'completed' ? computedEnd : null
     await api(`/api/activities/${a.id}`, {
       method: 'PATCH',
       body: JSON.stringify({
@@ -1792,24 +1857,29 @@ function EditDialog({
               />
             </div>
             <div>
-              <label className="text-xs text-stone-500">Time</label>
+              <label className="text-xs text-stone-500">Start</label>
               <input
                 type="time"
                 value={time}
-                onChange={(e) => setTime(e.target.value)}
+                onChange={(e) => {
+                  const v = e.target.value
+                  setTime(v)
+                  if (hhmmToMinutes(endTime) <= hhmmToMinutes(v)) setEndTime(minutesToHHMM(hhmmToMinutes(v) + 30))
+                }}
                 className="mt-1 w-full rounded-xl border border-stone-200 px-2 py-2 text-sm"
               />
             </div>
             <div>
-              <label className="text-xs text-stone-500">Min</label>
+              <label className="text-xs text-stone-500">End</label>
               <input
-                type="number"
-                value={durationMin}
-                onChange={(e) => setDurationMin(Number(e.target.value))}
+                type="time"
+                value={endTime}
+                onChange={(e) => setEndTime(e.target.value)}
                 className="mt-1 w-full rounded-xl border border-stone-200 px-2 py-2 text-sm"
               />
             </div>
           </div>
+          <p className="text-xs text-stone-400">= {formatDuration(durationMin)}</p>
           <div>
             <label className="text-xs uppercase tracking-wide text-stone-500 font-semibold">
               Category
