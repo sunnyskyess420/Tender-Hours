@@ -57,3 +57,46 @@ model Activity {
   @@index([recurrenceTemplateId])
   @@index([isRecurrenceTemplate])
 }
+
+// ── Check-ins (ported from Healing Companion) ─────────────────────────────
+// Quick standalone captures: mood, healing check, and "I moved" logs.
+model CheckIn {
+  id        String   @id @default(cuid())
+  kind      String // "mood" | "healing" | "move"
+  value     String? // mood: "1".."5" · healing: "yes"|"no"|"skip" · move: null
+  note      String?
+  createdAt DateTime @default(now())
+
+  @@index([kind])
+  @@index([createdAt])
+}
+
+// ── Cue cards (ported from Healing Companion) ─────────────────────────────
+// Short present-moment reminders; the starter deck ships in the client.
+model CueCard {
+  id        String   @id @default(cuid())
+  text      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ── Journal + AI reframe (ported from Healing Companion) ──────────────────
+model JournalEntry {
+  id            String   @id @default(cuid())
+  text          String
+  reframeJson   String? // JSON: { pattern, summary, suggestion, fetchedAt }
+  reframeStatus String   @default("pending") // pending | done | error | skipped
+  reframeError  String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([createdAt])
+}
+
+// ── Weekly reflections ─────────────────────────────────────────────────────
+model Reflection {
+  id          String   @id @default(cuid())
+  weekOf      String   @unique // YYYY-MM-DD (Monday)
+  payload     String // JSON: { patterns, moodSummary, topReframes, suggestion, generatedAt }
+  generatedAt DateTime @default(now())
+}
