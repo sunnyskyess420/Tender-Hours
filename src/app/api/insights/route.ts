@@ -13,7 +13,10 @@ export async function GET(req: NextRequest) {
   const from = searchParams.get('from')
   const to = searchParams.get('to')
 
-  let where: any = {}
+  // Only things actually DONE count toward "time spent": completed
+  // activities only - never recurrence templates or planned/upcoming
+  // occurrences.
+  let where: any = { status: 'completed', isRecurrenceTemplate: false }
   if (from && to) where.date = { gte: from, lte: to }
 
   const activities = await db.activity.findMany({

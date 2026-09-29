@@ -2177,7 +2177,18 @@ function InsightsView() {
   }
 
   const maxCat = Math.max(1, ...Object.values(data.minutesByCategory).map((n: any) => Number(n)))
-  const maxDay = Math.max(1, ...data.dailyTrend.map((d: any) => d.minutes))
+
+  // Full 14-day series for the healing-minutes chart (missing days count as 0)
+  // and a pixel scale based on the biggest healing day in view.
+  const trendByDate = new Map<string, any>(data.dailyTrend.map((d: any) => [d.date, d]))
+  const chartDays: { date: string; healingMinutes: number }[] = []
+  for (let i = 0; i < 14; i++) {
+    const day = addDays(from, i)
+    const t = trendByDate.get(day)
+    chartDays.push({ date: day, healingMinutes: t ? t.healingMinutes : 0 })
+  }
+  const maxHealing = Math.max(1, ...chartDays.map((d) => d.healingMinutes))
+  const BAR_ZONE_PX = 108
 
   return (
     <div className="space-y-6">
@@ -2246,26 +2257,33 @@ function InsightsView() {
         <p className="text-xs text-stone-500 mb-4">
           Time you marked as moving you <em>toward</em> healing, per day
         </p>
-        <div className="flex items-end gap-1 h-32">
-          {data.dailyTrend.map((d: any) => {
-            const h = (d.healingMinutes / maxDay) * 100
-            return (
-              <div key={d.date} className="flex-1 flex flex-col items-center gap-1">
-                <div
-                  className="w-full bg-gradient-to-t from-emerald-400 to-teal-300 rounded-t-md"
-                  style={{ height: `${h}%`, minHeight: d.healingMinutes > 0 ? '4px' : '0' }}
-                  title={`${d.date}: ${d.healingMinutes} min`}
-                />
-                <span className="text-[10px] text-stone-400 -rotate-45 origin-top">
-                  {d.date.slice(5)}
-                </span>
-              </div>
-            )
-          })}
-          {data.dailyTrend.length === 0 && (
-            <p className="text-sm text-stone-400 w-full text-center">No data yet.</p>
-          )}
-        </div>
+        {chartDays.every((d) => d.healingMinutes === 0) ? (
+          <p className="text-sm text-stone-400">
+            No healing minutes logged yet — when you finish an activity, mark it as moving you
+            toward healing.
+          </p>
+        ) : (
+          <div className="flex items-end gap-1">
+            {chartDays.map((d) => {
+              const h =
+                d.healingMinutes > 0
+                  ? Math.max(6, Math.round((d.healingMinutes / maxHealing) * BAR_ZONE_PX))
+                  : 0
+              return (
+                <div key={d.date} className="flex-1 min-w-0 flex flex-col items-center gap-1">
+                  <div
+                    className="w-full bg-gradient-to-t from-emerald-400 to-teal-300 rounded-t-md"
+                    style={{ height: `${h}px` }}
+                    title={`${d.date}: ${d.healingMinutes} min toward healing`}
+                  />
+                  <span className="text-[9px] text-stone-400 tabular-nums whitespace-nowrap">
+                    {d.date.slice(5)}
+                  </span>
+                </div>
+              )
+            })}
+          </div>
+        )}
       </div>
 
       <div className="rounded-3xl bg-white border border-stone-200/60 p-6">
