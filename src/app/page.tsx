@@ -5,6 +5,7 @@ import { useToast } from '@/hooks/use-toast'
 import { useReminders } from '@/hooks/use-reminders'
 import { PWAInstallBanner } from '@/components/pwa-install-banner'
 import { ThemeToggle } from '@/components/theme-toggle'
+import { ToolsView } from '@/components/tools/tools-view'
 import {
   Calendar,
   Plus,
@@ -31,6 +32,7 @@ import {
   Moon,
   Repeat,
   Download,
+  Flower2,
 } from 'lucide-react'
 
 import {
@@ -61,14 +63,14 @@ import {
 } from '@/lib/healing'
 
 // ─── Tab type ────────────────────────────────────────────────────────────────
-type Tab = 'now' | 'today' | 'week' | 'insights'
+type Tab = 'now' | 'today' | 'week' | 'tools' | 'insights'
 
 // ─── Main page ───────────────────────────────────────────────────────────────
 function getInitialTab(): Tab {
   if (typeof window === 'undefined') return 'now'
   const params = new URLSearchParams(window.location.search)
   const t = params.get('tab')
-  if (t === 'now' || t === 'today' || t === 'week' || t === 'insights') return t
+  if (t === 'now' || t === 'today' || t === 'week' || t === 'tools' || t === 'insights') return t
   return 'now'
 }
 
@@ -87,6 +89,7 @@ export default function Home() {
           {tab === 'now' && <NowView reminders={reminders} />}
           {tab === 'today' && <DayView date={today} />}
           {tab === 'week' && <WeekView />}
+          {tab === 'tools' && <ToolsView />}
           {tab === 'insights' && <InsightsView />}
         </div>
       </main>
@@ -313,6 +316,7 @@ function TabBar({ tab, setTab }: { tab: Tab; setTab: (t: Tab) => void }) {
     { id: 'now', label: 'Now', icon: <Timer className="w-4 h-4" /> },
     { id: 'today', label: 'Today', icon: <ListChecks className="w-4 h-4" /> },
     { id: 'week', label: 'Schedule', icon: <Calendar className="w-4 h-4" /> },
+    { id: 'tools', label: 'Tools', icon: <Flower2 className="w-4 h-4" /> },
     { id: 'insights', label: 'Insights', icon: <Sparkles className="w-4 h-4" /> },
   ]
   return (
@@ -321,7 +325,7 @@ function TabBar({ tab, setTab }: { tab: Tab; setTab: (t: Tab) => void }) {
         <button
           key={it.id}
           onClick={() => setTab(it.id)}
-          className={`flex-1 min-w-[80px] flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium transition ${
+          className={`flex-1 min-w-[58px] flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-2 px-1.5 sm:px-3 py-1.5 sm:py-2.5 rounded-xl text-[11px] sm:text-sm font-medium transition ${
             tab === it.id
               ? 'bg-emerald-500 text-white shadow-sm'
               : 'text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800'
