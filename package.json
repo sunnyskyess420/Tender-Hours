@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 3000",
-    "build": "prisma generate && next build",
-    "postinstall": "prisma generate",
+    "build": "prisma generate && node scripts/ci-db-sync.mjs && next build",
+    "postinstall": "prisma generate && node scripts/ci-db-sync.mjs",
     "start": "next start -p 3000",
     "lint": "eslint .",
     "db:push": "prisma db push --accept-data-loss",

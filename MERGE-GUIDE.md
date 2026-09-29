@@ -98,8 +98,10 @@ package.json                     # + openai (dependency for the AI routes)
 
 **When merging into your repo:** copy the added files as-is; diff `page.tsx`
 and `tools-view.tsx` against your versions (small, localized changes); copy
-the four new models into your schema file(s). Then run `db:push` once — it
-only creates the new tables; nothing existing is touched.
+the four new models into your schema file(s). The database updates itself on
+deploy now — the build runs a safe schema sync (`scripts/ci-db-sync.mjs`), so
+new tables are created automatically. You can still run `db:push` manually
+any time.
 
 ---
 
