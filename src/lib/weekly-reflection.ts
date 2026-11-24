@@ -31,6 +31,7 @@ export async function generateReflection(memory: string): Promise<GenerateResult
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ memory }),
+      signal: AbortSignal.timeout(90_000),
     })
     const data = await res.json().catch(() => ({}))
     if (!res.ok) {
@@ -38,6 +39,10 @@ export async function generateReflection(memory: string): Promise<GenerateResult
     }
     return { ok: true, reflection: data as WeeklyReflection }
   } catch (e) {
-    return { ok: false, reflection: null, error: e instanceof Error ? e.message : String(e) }
+    const msg = e instanceof Error ? e.message : String(e)
+    const friendly = /abort|timeout/i.test(msg)
+      ? 'The AI took too long to answer. Try again in a moment.'
+      : msg
+    return { ok: false, reflection: null, error: friendly }
   }
 }

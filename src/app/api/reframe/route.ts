@@ -35,6 +35,8 @@ function getClient(): OpenAI | null {
   return new OpenAI({
     apiKey,
     baseURL: process.env.OPENAI_BASE_URL,
+    timeout: 45_000,
+    maxRetries: 1,
   });
 }
 

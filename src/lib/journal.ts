@@ -55,6 +55,7 @@ async function postJson<T>(path: string, body: unknown): Promise<ApiResult<T>> {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
+      signal: AbortSignal.timeout(90_000),
     })
     const data = await res.json().catch(() => ({}))
     if (!res.ok) {
