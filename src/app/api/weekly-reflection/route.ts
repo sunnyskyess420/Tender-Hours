@@ -63,7 +63,7 @@ function getClient(): OpenAI | null {
 }
 
 function getModel(): string {
-  return process.env.OPENAI_MODEL || 'gpt-4o-mini'
+  return process.env.OPENAI_MODEL || 'gemini-3.8-flash'
 }
 
 /**

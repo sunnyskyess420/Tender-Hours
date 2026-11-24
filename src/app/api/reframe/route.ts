@@ -7,7 +7,7 @@
 // Required env vars:
 //   OPENAI_API_KEY    — your provider's API key
 //   OPENAI_BASE_URL   — (optional) provider's base URL; defaults to OpenAI
-//   OPENAI_MODEL      — (optional) model name; defaults to "gpt-4o-mini"
+//   OPENAI_MODEL      — (optional) model name; defaults to "gemini-3.8-flash"
 //
 // Some providers cut the reply off mid-sentence (observed with Gemini via the
 // OpenAI-compatible endpoint: a well-formed JSON reply truncated at ~142
@@ -39,7 +39,7 @@ function getClient(): OpenAI | null {
 }
 
 function getModel(): string {
-  return process.env.OPENAI_MODEL || "gpt-4o-mini";
+  return process.env.OPENAI_MODEL || "gemini-3.8-flash";
 }
 
 /**
