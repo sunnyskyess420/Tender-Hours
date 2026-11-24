@@ -8,7 +8,7 @@
  *  - API requests: never cached (always network — we want fresh data).
  */
 
-const VERSION = 'tender-hours-v1'
+const VERSION = 'tender-hours-v2'
 const STATIC_CACHE = `${VERSION}-static`
 const RUNTIME_CACHE = `${VERSION}-runtime`
 
@@ -112,6 +112,62 @@ self.addEventListener('fetch', (event) => {
           return res
         })
     )
+  )
+})
+
+// Nudges only help if tapping one takes you somewhere. Every notification
+// carries a target in `data.url` (the app root by default). Tapping focuses the
+// window that is already showing it, or launches the app - which, once
+// installed, is the standalone PWA window rather than a browser tab.
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close()
+
+  const requested = new URL(
+    (event.notification.data && event.notification.data.url) || '/',
+    self.location.origin
+  )
+  // Only ever open our own origin - a notification is not a redirector.
+  const target =
+    requested.origin === self.location.origin
+      ? requested
+      : new URL('/', self.location.origin)
+
+  const isTarget = (client) => {
+    const url = new URL(client.url)
+    return (
+      url.origin === target.origin &&
+      url.pathname === target.pathname &&
+      url.search === target.search
+    )
+  }
+
+  event.waitUntil(
+    (async () => {
+      const windowClients = await self.clients.matchAll({
+        type: 'window',
+        includeUncontrolled: true,
+      })
+
+      // Already on the right page: just bring it to the front.
+      const onTarget = windowClients.find(isTarget)
+      if (onTarget) return onTarget.focus()
+
+      // Some other page of the app is open: point it at the target, then focus.
+      const sameOrigin = windowClients.find(
+        (client) => new URL(client.url).origin === target.origin
+      )
+      if (sameOrigin) {
+        try {
+          const navigated = await sameOrigin.navigate(target.href)
+          return (navigated || sameOrigin).focus()
+        } catch {
+          return sameOrigin.focus()
+        }
+      }
+
+      // Nothing open: launch the app.
+      return self.clients.openWindow(target.href)
+    })()
   )
 })
 

@@ -16,6 +16,12 @@ export const HOURLY_MS = 60 * 60 * 1000
 export const MOVE_NUDGE_BODY =
   'Time to move. Stand up, stretch, walk to the window. One minute is enough.'
 
+/**
+ * Where tapping a nudge takes you. The app is a single page today, so this is
+ * the root; the notification carries it in `data.url` for the service worker.
+ */
+export const MOVE_NUDGE_URL = '/'
+
 export type ReminderActionResult =
   | { ok: true }
   | { ok: false; reason: string; detail?: string }
@@ -47,7 +53,7 @@ export function moveNotificationOptions(body: string): MoveNotificationOptions {
     tag: 'hourly-move',
     vibrate: [80, 40, 80],
     requireInteraction: true,
-    data: { source: 'reminder' },
+    data: { source: 'reminder', url: MOVE_NUDGE_URL },
   }
 }
 
@@ -179,7 +185,16 @@ async function showAppNotification(body: string, tag: string): Promise<NotifyOut
   }
 
   try {
-    new Notification('Tender Hours', { ...moveNotificationOptions(body), tag })
+    const notification = new Notification('Tender Hours', {
+      ...moveNotificationOptions(body),
+      tag,
+    })
+    // This path bypasses the service worker, so its notificationclick handler
+    // does not apply: bring the window forward from here instead.
+    notification.onclick = () => {
+      window.focus()
+      notification.close()
+    }
     return { ok: true }
   } catch (e) {
     return {
