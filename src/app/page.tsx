@@ -18,6 +18,7 @@ import {
   Pencil,
   Play,
   Square,
+  Check,
   ChevronRight,
   ChevronLeft,
   Smile,
@@ -1240,6 +1241,45 @@ function DayView({ date }: { date: string }) {
     load()
   }
 
+  /**
+   * Tick a planned activity off without starting a timer first.
+   *
+   * The plan is the record: once its slot has ended, ticking it off logs the
+   * slot as planned rather than the hours since it. While the slot is
+   * underway it logs up to now, and before it starts the plan stands as
+   * written — so a tick is never a negative or a runaway duration.
+   */
+  async function completePlanned(a: Activity) {
+    const now = Date.now()
+    const startMs = new Date(a.startTime).getTime()
+    const plannedEndMs = a.endTime ? new Date(a.endTime).getTime() : null
+
+    let endTime: string
+    if (startMs > now) {
+      endTime = a.endTime ?? a.startTime
+    } else if (plannedEndMs !== null && plannedEndMs <= now) {
+      endTime = a.endTime as string
+    } else {
+      endTime = nowISO()
+    }
+
+    const durationMin = minutesBetween(a.startTime, endTime)
+    await api(`/api/activities/${a.id}`, {
+      method: 'PATCH',
+      body: JSON.stringify({
+        status: 'completed',
+        endTime,
+        durationMin,
+        healingImpact: a.healingImpact ?? 'helped',
+      }),
+    })
+    toast({
+      title: 'Marked done',
+      description: `${a.title} · ${formatDuration(durationMin)}`,
+    })
+    load()
+  }
+
   async function skip(a: Activity) {
     await api(`/api/activities/${a.id}`, {
       method: 'PATCH',
@@ -1306,6 +1346,7 @@ function DayView({ date }: { date: string }) {
                   a={a}
                   onStartPlanned={() => startPlanned(a)}
                   onCompleteActive={() => completeNow(a)}
+                  onCompletePlanned={() => completePlanned(a)}
                   onSkip={() => skip(a)}
                   onEdit={() => setEditing(a)}
                   onDelete={() => remove(a.id)}
@@ -1321,6 +1362,7 @@ function DayView({ date }: { date: string }) {
                   a={a}
                   onStartPlanned={() => startPlanned(a)}
                   onCompleteActive={() => completeNow(a)}
+                  onCompletePlanned={() => completePlanned(a)}
                   onSkip={() => skip(a)}
                   onEdit={() => setEditing(a)}
                   onDelete={() => remove(a.id)}
@@ -1336,6 +1378,7 @@ function DayView({ date }: { date: string }) {
                   a={a}
                   onStartPlanned={() => startPlanned(a)}
                   onCompleteActive={() => completeNow(a)}
+                  onCompletePlanned={() => completePlanned(a)}
                   onSkip={() => skip(a)}
                   onEdit={() => setEditing(a)}
                   onDelete={() => remove(a.id)}
@@ -1419,6 +1462,7 @@ function ActivityRow({
   a,
   onStartPlanned,
   onCompleteActive,
+  onCompletePlanned,
   onSkip,
   onEdit,
   onDelete,
@@ -1426,6 +1470,7 @@ function ActivityRow({
   a: Activity
   onStartPlanned: () => void
   onCompleteActive: () => void
+  onCompletePlanned: () => void
   onSkip: () => void
   onEdit: () => void
   onDelete: () => void
@@ -1503,10 +1548,13 @@ function ActivityRow({
           )}
         </div>
       </div>
-      <div className="flex items-center gap-2 mt-3 justify-end">
+      <div className="flex items-center gap-2 mt-3 justify-end flex-wrap">
         {a.status === 'planned' && (
           <>
-            <ActionButton onClick={onStartPlanned} tone="primary">
+            <ActionButton onClick={onCompletePlanned} tone="primary">
+              <Check className="w-3.5 h-3.5" /> Mark done
+            </ActionButton>
+            <ActionButton onClick={onStartPlanned}>
               <Play className="w-3.5 h-3.5" /> Start now
             </ActionButton>
             <ActionButton onClick={onSkip}>Skip</ActionButton>

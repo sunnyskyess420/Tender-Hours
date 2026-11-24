@@ -7,6 +7,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Bell, Check, ChevronRight, Footprints, HeartPulse, Plus, SkipForward, Smile, X } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
+import { ToastAction } from '@/components/ui/toast'
 import {
   Sheet,
   SheetContent,
@@ -17,9 +18,12 @@ import {
 import {
   CheckIn,
   MOOD_LABELS,
+  clearLastMoveLocally,
   countToday,
   createCheckIn,
+  deleteCheckIn,
   listCheckIns,
+  localDayKey,
   markMovedLocally,
 } from '@/lib/checkins'
 import { useHourlyMoveNudge } from '@/hooks/use-hourly-move-nudge'
@@ -97,6 +101,12 @@ export function CheckInSection() {
   const healingCount = countToday(checkIns, 'healing')
   const moveCount = countToday(checkIns, 'move')
 
+  // Today's moves, newest first — the raw material for deleting a mis-tap.
+  const todayKey = localDayKey(new Date().toISOString())
+  const moveToday = checkIns
+    .filter((c) => c.kind === 'move' && localDayKey(c.createdAt) === todayKey)
+    .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
+
   // ── Actions ───────────────────────────────────────────────────────────────
 
   async function saveMood() {
@@ -156,8 +166,19 @@ export function CheckInSection() {
     }
     setCheckIns((prev) => [optimistic, ...prev])
     try {
-      await createCheckIn({ kind: 'move' })
-      toast({ title: 'Moved — nice.', description: 'One minute counts.' })
+      const saved = await createCheckIn({ kind: 'move' })
+      // Swap the optimistic row for the real one, so the chip row and the undo
+      // action both point at the stored check-in.
+      setCheckIns((prev) => prev.map((c) => (c.id === optimistic.id ? saved : c)))
+      toast({
+        title: 'Moved — nice.',
+        description: 'One minute counts.',
+        action: (
+          <ToastAction altText="Undo this move" onClick={() => deleteMove(saved)}>
+            Undo
+          </ToastAction>
+        ),
+      })
       void load()
     } catch (e) {
       console.error(e)
@@ -165,6 +186,38 @@ export function CheckInSection() {
         title: 'Saved on this device',
         description: 'The server was unreachable — the nudge timer still reset.',
       })
+    }
+  }
+
+  /**
+   * The nudge cadence mirrors the most recent move in localStorage. After a
+   * deletion, rebuild that mirror from what is left — otherwise removing a
+   * mis-tap would still leave the next nudge an hour out.
+   */
+  function syncMoveMirror(all: CheckIn[]) {
+    let newest: number | null = null
+    for (const c of all) {
+      if (c.kind !== 'move' || c.id.startsWith('local-')) continue
+      const t = new Date(c.createdAt).getTime()
+      if (Number.isFinite(t) && (newest === null || t > newest)) newest = t
+    }
+    if (newest === null) clearLastMoveLocally()
+    else markMovedLocally(newest)
+  }
+
+  async function deleteMove(c: CheckIn) {
+    // Optimistic: the chip goes on the tap, not on the round trip.
+    setCheckIns((prev) => prev.filter((x) => x.id !== c.id))
+    try {
+      if (!c.id.startsWith('local-')) await deleteCheckIn(c.id)
+      const all = await listCheckIns()
+      setCheckIns(all)
+      syncMoveMirror(all)
+      toast({ title: 'Move removed' })
+    } catch (e) {
+      console.error('could not delete check-in', e)
+      void load()
+      toast({ title: 'Could not delete', description: 'Try again in a moment.' })
     }
   }
 
@@ -261,6 +314,31 @@ export function CheckInSection() {
             </div>
             <Plus className="w-4 h-4 text-stone-300 shrink-0" />
           </button>
+
+          {/* Today's moves — delete one that was a mis-tap. */}
+          {moveToday.length > 0 && (
+            <div className="flex flex-wrap items-center gap-1.5 pt-1 pl-1">
+              <span className="text-xs text-stone-400">Today</span>
+              {moveToday.map((c) => {
+                const at = formatClock(new Date(c.createdAt).getTime())
+                return (
+                  <span
+                    key={c.id}
+                    className="inline-flex items-center gap-0.5 rounded-full border border-stone-200 bg-white pl-2 pr-0.5 py-0.5 text-xs text-stone-500"
+                  >
+                    {at}
+                    <button
+                      onClick={() => deleteMove(c)}
+                      aria-label={`Delete the move logged at ${at}`}
+                      className="rounded-full p-1 text-stone-300 transition hover:bg-rose-50 hover:text-rose-600"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </span>
+                )
+              })}
+            </div>
+          )}
         </div>
       </section>
 

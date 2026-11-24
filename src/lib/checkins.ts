@@ -40,6 +40,16 @@ export function getLastMoveAtLocal(): number | null {
   }
 }
 
+/** Forget the mirrored last move — used when that move is deleted. */
+export function clearLastMoveLocally() {
+  if (typeof window === 'undefined') return
+  try {
+    window.localStorage.removeItem(LAST_MOVE_KEY)
+  } catch {
+    // Private mode — nothing stored to clear.
+  }
+}
+
 export function markMovedLocally(ts: number = Date.now()) {
   if (typeof window === 'undefined') return
   try {
@@ -66,6 +76,14 @@ export async function createCheckIn(input: {
     body: JSON.stringify(input),
   })
   return data.checkIn
+}
+
+/**
+ * Delete a check-in. The route is shared by every kind, so this works for a
+ * mis-tapped "I moved" as well as anything logged by mistake later on.
+ */
+export async function deleteCheckIn(id: string): Promise<void> {
+  await api(`/api/checkins/${id}`, { method: 'DELETE' })
 }
 
 // ── Small helpers for counts ───────────────────────────────────────────────
