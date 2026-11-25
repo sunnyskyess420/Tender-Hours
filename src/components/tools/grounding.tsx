@@ -59,16 +59,16 @@ export function GroundingToolList({
         <button
           key={t.title}
           onClick={t.onClick}
-          className="w-full flex items-center gap-3 rounded-2xl border border-stone-200/60 bg-white p-4 text-left transition hover:bg-emerald-50/50"
+          className="w-full flex items-center gap-3 rounded-2xl border border-stone-200/60 dark:border-stone-800 bg-white dark:bg-stone-900 p-4 text-left transition hover:bg-emerald-50/50"
         >
-          <div className="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+          <div className="w-9 h-9 rounded-xl bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
             {t.icon}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-stone-800">{t.title}</p>
-            <p className="text-xs text-stone-500">{t.subtitle}</p>
+            <p className="text-sm font-medium text-stone-800 dark:text-stone-100">{t.title}</p>
+            <p className="text-xs text-stone-500 dark:text-stone-400">{t.subtitle}</p>
           </div>
-          <ChevronRight className="w-4 h-4 text-stone-300 shrink-0" />
+          <ChevronRight className="w-4 h-4 text-stone-300 dark:text-stone-600 shrink-0" />
         </button>
       ))}
     </div>
@@ -113,12 +113,12 @@ export function SensesFlowSheet({
         </SheetHeader>
 
         <div className="px-4 flex flex-col items-center gap-4 text-center py-2">
-          <div className="w-24 h-24 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center">
-            <span className="text-4xl font-semibold text-emerald-600">{current.count}</span>
+          <div className="w-24 h-24 rounded-full bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900 flex items-center justify-center">
+            <span className="text-4xl font-semibold text-emerald-600 dark:text-emerald-400">{current.count}</span>
           </div>
-          <p className="text-sm font-medium text-stone-700">things you can {current.sense}</p>
-          <p className="max-w-xs text-sm text-stone-600">{current.prompt}</p>
-          <p className="text-xs text-stone-400">
+          <p className="text-sm font-medium text-stone-700 dark:text-stone-200">things you can {current.sense}</p>
+          <p className="max-w-xs text-sm text-stone-600 dark:text-stone-300">{current.prompt}</p>
+          <p className="text-xs text-stone-400 dark:text-stone-500">
             Look around. Notice each one. You don&apos;t have to write anything.
           </p>
         </div>
@@ -126,7 +126,7 @@ export function SensesFlowSheet({
         <div className="p-4 pt-0 flex gap-2">
           {step > 0 && (
             <button
-              className="flex-1 px-4 py-2.5 rounded-xl border border-stone-200 text-stone-600 hover:bg-stone-50 transition"
+              className="flex-1 px-4 py-2.5 rounded-xl border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800 transition"
               onClick={() => setStep(0)}
             >
               Start over
@@ -237,27 +237,27 @@ export function BoxBreathingSheet({
         <div className="px-4 flex flex-col items-center gap-6 py-2">
           <div className="flex h-48 w-48 items-center justify-center">
             <div
-              className={`flex h-40 w-40 items-center justify-center rounded-full bg-emerald-100 transition-transform ease-in-out ${ringScale}`}
+              className={`flex h-40 w-40 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900/50 transition-transform ease-in-out ${ringScale}`}
               style={{ transitionDuration: `${phase.duration * 1000}ms` }}
             >
-              <div className="flex h-28 w-28 items-center justify-center rounded-full bg-emerald-200/70">
-                <span className="text-4xl font-light text-emerald-700" aria-live="polite">
+              <div className="flex h-28 w-28 items-center justify-center rounded-full bg-emerald-200/70 dark:bg-emerald-900/40">
+                <span className="text-4xl font-light text-emerald-700 dark:text-emerald-400" aria-live="polite">
                   {secondsLeft}
                 </span>
               </div>
             </div>
           </div>
-          <p className="text-xl font-medium text-stone-700" aria-live="polite">
+          <p className="text-xl font-medium text-stone-700 dark:text-stone-200" aria-live="polite">
             {isDone ? 'Done' : phase.name}
           </p>
           {isDone && (
-            <p className="text-sm text-stone-500">Nice. Four cycles complete.</p>
+            <p className="text-sm text-stone-500 dark:text-stone-400">Nice. Four cycles complete.</p>
           )}
         </div>
 
         <div className="p-4 pt-0 flex gap-2">
           <button
-            className="flex-1 px-4 py-2.5 rounded-xl border border-stone-200 text-stone-600 hover:bg-stone-50 transition"
+            className="flex-1 px-4 py-2.5 rounded-xl border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800 transition"
             onClick={() => onOpenChange(false)}
           >
             Close
@@ -335,15 +335,15 @@ export function TippSheet({
           {tips.map((t) => (
             <div
               key={t.letter + t.name}
-              className="flex items-start gap-3 rounded-2xl border border-stone-200/60 bg-white px-4 py-3"
+              className="flex items-start gap-3 rounded-2xl border border-stone-200/60 dark:border-stone-800 bg-white dark:bg-stone-900 px-4 py-3"
             >
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-500 text-lg font-bold text-white">
                 {t.letter}
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium text-stone-800">{t.name}</p>
-                <p className="mt-0.5 text-sm text-stone-600">{t.what}</p>
-                <p className="mt-1 text-xs text-stone-400">{t.why}</p>
+                <p className="text-sm font-medium text-stone-800 dark:text-stone-100">{t.name}</p>
+                <p className="mt-0.5 text-sm text-stone-600 dark:text-stone-300">{t.what}</p>
+                <p className="mt-1 text-xs text-stone-400 dark:text-stone-500">{t.why}</p>
               </div>
             </div>
           ))}
@@ -415,16 +415,16 @@ export function ColdWaterSheet({
         </SheetHeader>
 
         <div className="px-4 flex flex-col gap-4 py-1">
-          <div className="rounded-2xl bg-emerald-50 border border-emerald-100 px-4 py-3">
-            <p className="text-sm text-stone-700">
+          <div className="rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900 px-4 py-3">
+            <p className="text-sm text-stone-700 dark:text-stone-200">
               <span className="font-medium">Go now:</span> Splash cold water on your face, or
               hold an ice cube in your hand for 30 seconds.
             </p>
           </div>
 
           <div>
-            <p className="mb-1 text-xs uppercase tracking-wider text-stone-400">Why it works</p>
-            <p className="text-sm text-stone-500">
+            <p className="mb-1 text-xs uppercase tracking-wider text-stone-400 dark:text-stone-500">Why it works</p>
+            <p className="text-sm text-stone-500 dark:text-stone-400">
               Cold activates the mammalian dive reflex. Heart rate drops, blood redirects to
               your brain and core, and the parasympathetic system kicks in. It&apos;s the single
               fastest body-based reset we have. You don&apos;t have to feel like doing it — you
@@ -433,11 +433,11 @@ export function ColdWaterSheet({
           </div>
 
           {/* 60-second cooldown timer */}
-          <div className="flex flex-col items-center gap-2 rounded-2xl border border-stone-200/60 bg-stone-50 px-4 py-4">
-            <p className="text-xs uppercase tracking-wider text-stone-400">
+          <div className="flex flex-col items-center gap-2 rounded-2xl border border-stone-200/60 dark:border-stone-800 bg-stone-50 dark:bg-stone-800/60 px-4 py-4">
+            <p className="text-xs uppercase tracking-wider text-stone-400 dark:text-stone-500">
               {running ? 'Cooldown' : '60-second timer'}
             </p>
-            <p className="text-4xl font-light text-emerald-600">
+            <p className="text-4xl font-light text-emerald-600 dark:text-emerald-400">
               {String(Math.floor(secondsLeft / 60)).padStart(2, '0')}:
               {String(secondsLeft % 60).padStart(2, '0')}
             </p>

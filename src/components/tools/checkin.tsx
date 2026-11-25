@@ -31,7 +31,7 @@ import { useHourlyMoveNudge } from '@/hooks/use-hourly-move-nudge'
 const NUDGE_PREF_KEY = 'tender-hours:nudge:enabled'
 
 const inputCls =
-  'w-full rounded-xl border border-stone-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 resize-none'
+  'w-full rounded-xl border border-stone-200 dark:border-stone-700 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 dark:focus:ring-emerald-700 resize-none'
 
 function formatClock(ts: number): string {
   return new Date(ts).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
@@ -39,7 +39,7 @@ function formatClock(ts: number): string {
 
 function SectionHeading({ icon, title }: { icon: React.ReactNode; title: string }) {
   return (
-    <h3 className="flex items-center gap-2 text-sm font-semibold text-stone-500 uppercase tracking-wide mb-3">
+    <h3 className="flex items-center gap-2 text-sm font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wide mb-3">
       {icon}
       {title}
     </h3>
@@ -267,70 +267,70 @@ export function CheckInSection() {
           {/* Mood */}
           <button
             onClick={() => setMoodOpen(true)}
-            className="w-full flex items-center gap-3 rounded-2xl border border-stone-200/60 bg-white p-4 text-left transition hover:bg-emerald-50/50"
+            className="w-full flex items-center gap-3 rounded-2xl border border-stone-200/60 dark:border-stone-800 bg-white dark:bg-stone-900 p-4 text-left transition hover:bg-emerald-50/50"
           >
-            <div className="w-9 h-9 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+            <div className="w-9 h-9 rounded-xl bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
               <Smile className="w-4 h-4" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-stone-800">Log how I feel</p>
-              <p className="text-xs text-stone-500">
+              <p className="text-sm font-medium text-stone-800 dark:text-stone-100">Log how I feel</p>
+              <p className="text-xs text-stone-500 dark:text-stone-400">
                 {moodCount === 0 ? 'Not logged yet today' : `${moodCount} today`}
               </p>
             </div>
-            <ChevronRight className="w-4 h-4 text-stone-300 shrink-0" />
+            <ChevronRight className="w-4 h-4 text-stone-300 dark:text-stone-600 shrink-0" />
           </button>
 
           {/* Healing check */}
           <button
             onClick={() => setHealingOpen(true)}
-            className="w-full flex items-center gap-3 rounded-2xl border border-stone-200/60 bg-white p-4 text-left transition hover:bg-emerald-50/50"
+            className="w-full flex items-center gap-3 rounded-2xl border border-stone-200/60 dark:border-stone-800 bg-white dark:bg-stone-900 p-4 text-left transition hover:bg-emerald-50/50"
           >
-            <div className="w-9 h-9 rounded-xl bg-rose-100 text-rose-500 flex items-center justify-center shrink-0">
+            <div className="w-9 h-9 rounded-xl bg-rose-100 dark:bg-rose-950/50 text-rose-500 dark:text-rose-400 flex items-center justify-center shrink-0">
               <HeartPulse className="w-4 h-4" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-stone-800">Quick healing check</p>
-              <p className="text-xs text-stone-500">
+              <p className="text-sm font-medium text-stone-800 dark:text-stone-100">Quick healing check</p>
+              <p className="text-xs text-stone-500 dark:text-stone-400">
                 {healingCount === 0 ? 'Ask yourself once' : `${healingCount} today`}
               </p>
             </div>
-            <ChevronRight className="w-4 h-4 text-stone-300 shrink-0" />
+            <ChevronRight className="w-4 h-4 text-stone-300 dark:text-stone-600 shrink-0" />
           </button>
 
           {/* I moved */}
           <button
             onClick={logMove}
-            className="w-full flex items-center gap-3 rounded-2xl border border-stone-200/60 bg-white p-4 text-left transition hover:bg-emerald-50/50"
+            className="w-full flex items-center gap-3 rounded-2xl border border-stone-200/60 dark:border-stone-800 bg-white dark:bg-stone-900 p-4 text-left transition hover:bg-emerald-50/50"
           >
-            <div className="w-9 h-9 rounded-xl bg-sky-100 text-sky-600 flex items-center justify-center shrink-0">
+            <div className="w-9 h-9 rounded-xl bg-sky-100 dark:bg-sky-900/40 text-sky-600 dark:text-sky-400 flex items-center justify-center shrink-0">
               <Footprints className="w-4 h-4" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-stone-800">I moved</p>
-              <p className="text-xs text-stone-500">
+              <p className="text-sm font-medium text-stone-800 dark:text-stone-100">I moved</p>
+              <p className="text-xs text-stone-500 dark:text-stone-400">
                 {moveCount === 0 ? 'First one today' : `${moveCount} today`}
               </p>
             </div>
-            <Plus className="w-4 h-4 text-stone-300 shrink-0" />
+            <Plus className="w-4 h-4 text-stone-300 dark:text-stone-600 shrink-0" />
           </button>
 
           {/* Today's moves — delete one that was a mis-tap. */}
           {moveToday.length > 0 && (
             <div className="flex flex-wrap items-center gap-1.5 pt-1 pl-1">
-              <span className="text-xs text-stone-400">Today</span>
+              <span className="text-xs text-stone-400 dark:text-stone-500">Today</span>
               {moveToday.map((c) => {
                 const at = formatClock(new Date(c.createdAt).getTime())
                 return (
                   <span
                     key={c.id}
-                    className="inline-flex items-center gap-0.5 rounded-full border border-stone-200 bg-white pl-2 pr-0.5 py-0.5 text-xs text-stone-500"
+                    className="inline-flex items-center gap-0.5 rounded-full border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-900 pl-2 pr-0.5 py-0.5 text-xs text-stone-500 dark:text-stone-400"
                   >
                     {at}
                     <button
                       onClick={() => deleteMove(c)}
                       aria-label={`Delete the move logged at ${at}`}
-                      className="rounded-full p-1 text-stone-300 transition hover:bg-rose-50 hover:text-rose-600"
+                      className="rounded-full p-1 text-stone-300 dark:text-stone-600 transition hover:bg-rose-50 hover:text-rose-600"
                     >
                       <X className="w-3 h-3" />
                     </button>
@@ -345,22 +345,22 @@ export function CheckInSection() {
       {/* ── Move nudge ───────────────────────────────────────────────────── */}
       <section>
         <SectionHeading icon={<Bell className="w-4 h-4" />} title="Move nudge" />
-        <div className="rounded-2xl border border-stone-200/60 bg-white p-4">
+        <div className="rounded-2xl border border-stone-200/60 dark:border-stone-800 bg-white dark:bg-stone-900 p-4">
           <div className="flex items-center justify-between gap-3">
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-stone-800">Hourly move nudge</p>
-              <p className="text-xs text-stone-500 mt-0.5">{nudgeStatus}</p>
+              <p className="text-sm font-medium text-stone-800 dark:text-stone-100">Hourly move nudge</p>
+              <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">{nudgeStatus}</p>
             </div>
             {nudge.supported !== false && nudge.permission === 'granted' && (
               <button
                 onClick={() => setNudge(!nudgeEnabled)}
                 className={`relative w-11 h-6 rounded-full transition shrink-0 ${
-                  nudgeEnabled ? 'bg-emerald-500' : 'bg-stone-300'
+                  nudgeEnabled ? 'bg-emerald-500' : 'bg-stone-300 dark:bg-stone-600'
                 }`}
                 aria-label="Toggle hourly move nudge"
               >
                 <span
-                  className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition ${
+                  className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white dark:bg-stone-900 rounded-full shadow-sm transition ${
                     nudgeEnabled ? 'translate-x-5' : ''
                   }`}
                 />
@@ -376,13 +376,13 @@ export function CheckInSection() {
             )}
           </div>
           {nudge.supported !== false && nudge.permission === 'granted' && nudgeEnabled && (
-            <div className="mt-3 pt-3 border-t border-stone-100 flex items-center justify-between gap-3">
-              <p className="text-xs text-stone-400">
+            <div className="mt-3 pt-3 border-t border-stone-100 dark:border-stone-800 flex items-center justify-between gap-3">
+              <p className="text-xs text-stone-400 dark:text-stone-500">
                 {nudge.nextDueAt ? `Next nudge around ${formatClock(nudge.nextDueAt)}` : 'Nudge is warming up…'}
               </p>
               <button
                 onClick={testNudge}
-                className="text-xs text-emerald-600 hover:text-emerald-700 font-medium"
+                className="text-xs text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 font-medium"
               >
                 Send a test nudge
               </button>
@@ -412,20 +412,20 @@ export function CheckInSection() {
                     aria-pressed={selected}
                     className={`flex flex-col items-center gap-1.5 rounded-2xl border-2 px-1 py-3 transition ${
                       selected
-                        ? 'border-emerald-400 bg-emerald-50'
-                        : 'border-transparent bg-stone-50 hover:bg-emerald-50/50'
+                        ? 'border-emerald-400 bg-emerald-50 dark:bg-emerald-950/30'
+                        : 'border-transparent bg-stone-50 dark:bg-stone-800/60 hover:bg-emerald-50/50'
                     }`}
                   >
                     <span
                       className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold ${
                         selected
                           ? 'bg-emerald-500 text-white'
-                          : 'bg-white border border-stone-200 text-stone-500'
+                          : 'bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-700 text-stone-500 dark:text-stone-400'
                       }`}
                     >
                       {n}
                     </span>
-                    <span className="text-[10px] text-stone-400 text-center leading-tight">
+                    <span className="text-[10px] text-stone-400 dark:text-stone-500 text-center leading-tight">
                       {MOOD_LABELS[n]}
                     </span>
                   </button>
@@ -434,7 +434,7 @@ export function CheckInSection() {
             </div>
 
             <textarea
-              className={`${inputCls} mt-4 bg-stone-50/50`}
+              className={`${inputCls} mt-4 bg-stone-50/50 dark:bg-stone-800/50`}
               placeholder="Optional note — what's underneath the feeling?"
               value={moodNote}
               onChange={(e) => setMoodNote(e.target.value)}
@@ -444,7 +444,7 @@ export function CheckInSection() {
 
           <div className="p-4 flex gap-2">
             <button
-              className="flex-1 px-4 py-2.5 rounded-xl border border-stone-200 text-stone-600 hover:bg-stone-50 transition"
+              className="flex-1 px-4 py-2.5 rounded-xl border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800 transition"
               onClick={() => {
                 setMoodValue(null)
                 setMoodNote('')
@@ -487,7 +487,7 @@ export function CheckInSection() {
               <button
                 onClick={() => saveHealing('no')}
                 disabled={saving}
-                className="h-16 flex flex-col items-center justify-center gap-1 rounded-2xl bg-stone-100 hover:bg-stone-200 disabled:opacity-60 text-stone-600 transition"
+                className="h-16 flex flex-col items-center justify-center gap-1 rounded-2xl bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 disabled:opacity-60 text-stone-600 dark:text-stone-300 transition"
               >
                 <X className="w-5 h-5" />
                 <span className="text-xs font-medium">No</span>
@@ -495,7 +495,7 @@ export function CheckInSection() {
               <button
                 onClick={() => saveHealing('skip')}
                 disabled={saving}
-                className="h-16 flex flex-col items-center justify-center gap-1 rounded-2xl border border-stone-200 hover:bg-stone-50 disabled:opacity-60 text-stone-500 transition"
+                className="h-16 flex flex-col items-center justify-center gap-1 rounded-2xl border border-stone-200 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-800 disabled:opacity-60 text-stone-500 dark:text-stone-400 transition"
               >
                 <SkipForward className="w-5 h-5" />
                 <span className="text-xs font-medium">Skip</span>
@@ -503,7 +503,7 @@ export function CheckInSection() {
             </div>
 
             <textarea
-              className={`${inputCls} mt-4 bg-stone-50/50`}
+              className={`${inputCls} mt-4 bg-stone-50/50 dark:bg-stone-800/50`}
               placeholder="Optional — what's the thought under the thought?"
               value={healingNote}
               onChange={(e) => setHealingNote(e.target.value)}
@@ -511,7 +511,7 @@ export function CheckInSection() {
             />
           </div>
 
-          <p className="px-4 pt-3 text-center text-xs text-stone-400">
+          <p className="px-4 pt-3 text-center text-xs text-stone-400 dark:text-stone-500">
             There will be days you can&apos;t face this question. Skip is always allowed.
           </p>
         </SheetContent>

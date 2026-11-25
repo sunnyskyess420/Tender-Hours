@@ -68,8 +68,8 @@ export function ToolsView() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-lg font-semibold text-stone-800">Your toolkit</h2>
-        <p className="text-xs text-stone-500 mt-0.5">
+        <h2 className="text-lg font-semibold text-stone-800 dark:text-stone-100">Your toolkit</h2>
+        <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
           For the moments in between — check in, ground, steady yourself.
         </p>
       </div>
@@ -79,11 +79,11 @@ export function ToolsView() {
       <JournalSection />
 
       <section>
-        <h3 className="flex items-center gap-2 text-sm font-semibold text-stone-500 uppercase tracking-wide mb-3">
+        <h3 className="flex items-center gap-2 text-sm font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wide mb-3">
           <Wind className="w-4 h-4" />
           Grounding tools
         </h3>
-        <p className="text-xs text-stone-500 mb-3">
+        <p className="text-xs text-stone-500 dark:text-stone-400 mb-3">
           One tap. Under 60 seconds. No streaks, no shame.
         </p>
         <GroundingToolList

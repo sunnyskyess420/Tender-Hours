@@ -154,13 +154,13 @@ function ReminderBell({
     <div className="relative">
       <button
         onClick={() => setOpen((o) => !o)}
-        className="relative w-10 h-10 rounded-xl bg-white border border-stone-200 shadow-sm flex items-center justify-center hover:bg-stone-50 transition"
+        className="relative w-10 h-10 rounded-xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-700 shadow-sm flex items-center justify-center hover:bg-stone-50 dark:hover:bg-stone-800 transition"
         aria-label="Reminders"
       >
         {count > 0 || needsPermission ? (
-          <BellRing className="w-5 h-5 text-emerald-600" />
+          <BellRing className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
         ) : (
-          <Bell className="w-5 h-5 text-stone-500" />
+          <Bell className="w-5 h-5 text-stone-500 dark:text-stone-400" />
         )}
         {(count > 0 || needsPermission) && (
           <span className="absolute -top-1 -right-1 bg-emerald-500 text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
@@ -175,15 +175,15 @@ function ReminderBell({
             className="fixed inset-0 z-40"
             onClick={() => setOpen(false)}
           />
-          <div className="absolute right-0 mt-2 w-80 max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-xl border border-stone-200 z-50 overflow-hidden">
-            <div className="px-4 py-3 border-b border-stone-100 flex items-center justify-between">
-              <h3 className="font-semibold text-stone-800 text-sm">Reminders</h3>
+          <div className="absolute right-0 mt-2 w-80 max-w-[calc(100vw-2rem)] bg-white dark:bg-stone-900 rounded-2xl shadow-xl border border-stone-200 dark:border-stone-700 z-50 overflow-hidden">
+            <div className="px-4 py-3 border-b border-stone-100 dark:border-stone-800 flex items-center justify-between">
+              <h3 className="font-semibold text-stone-800 dark:text-stone-100 text-sm">Reminders</h3>
               <button
                 onClick={() => {
                   setOpen(false)
                   onOpenSettings()
                 }}
-                className="text-stone-400 hover:text-stone-600"
+                className="text-stone-400 dark:text-stone-500 hover:text-stone-600"
                 aria-label="Reminder settings"
               >
                 <Settings className="w-4 h-4" />
@@ -192,8 +192,8 @@ function ReminderBell({
 
             <div className="max-h-80 overflow-y-auto">
               {needsPermission && (
-                <div className="p-4 border-b border-stone-100 bg-amber-50">
-                  <p className="text-sm text-stone-700">
+                <div className="p-4 border-b border-stone-100 dark:border-stone-800 bg-amber-50 dark:bg-amber-950/40">
+                  <p className="text-sm text-stone-700 dark:text-stone-200">
                     {reminders.permission === 'unsupported'
                       ? 'Browser notifications aren’t supported here, but in-app reminders will still appear in this panel.'
                       : reminders.notificationsOn
@@ -214,7 +214,7 @@ function ReminderBell({
               {reminders.pending.length === 0 ? (
                 <div className="p-6 text-center">
                   <div className="text-3xl">🌿</div>
-                  <p className="text-sm text-stone-500 mt-2">
+                  <p className="text-sm text-stone-500 dark:text-stone-400 mt-2">
                     No reminders waiting. You're all caught up.
                   </p>
                 </div>
@@ -231,10 +231,10 @@ function ReminderBell({
                 </ul>
               )}
               {reminders.pending.length > 1 && (
-                <div className="p-2 border-t border-stone-100">
+                <div className="p-2 border-t border-stone-100 dark:border-stone-800">
                   <button
                     onClick={reminders.dismissAll}
-                    className="w-full text-xs text-stone-500 hover:text-stone-700 py-1"
+                    className="w-full text-xs text-stone-500 dark:text-stone-400 hover:text-stone-700 py-1"
                   >
                     Dismiss all
                   </button>
@@ -264,14 +264,14 @@ function PendingReminderRow({
       <div className="flex items-start gap-2">
         <div className={`w-2 h-2 mt-1.5 rounded-full ${cat.dot} shrink-0`} />
         <div className="flex-1 min-w-0">
-          <p className="font-medium text-sm text-stone-800 truncate">{a.title}</p>
-          <p className="text-xs text-stone-500 mt-0.5">
+          <p className="font-medium text-sm text-stone-800 dark:text-stone-100 truncate">{a.title}</p>
+          <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
             {formatTime(a.startTime)} · {cat.emoji} {cat.label}
           </p>
         </div>
         <button
           onClick={onDismiss}
-          className="text-stone-300 hover:text-stone-500 shrink-0"
+          className="text-stone-300 dark:text-stone-600 hover:text-stone-500 shrink-0"
           aria-label="Dismiss"
         >
           <X className="w-4 h-4" />
@@ -280,19 +280,19 @@ function PendingReminderRow({
       <div className="flex gap-1 mt-2">
         <button
           onClick={() => onSnooze(5)}
-          className="flex-1 text-xs px-2 py-1.5 rounded-lg border border-stone-200 text-stone-600 hover:bg-stone-50"
+          className="flex-1 text-xs px-2 py-1.5 rounded-lg border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800"
         >
           Snooze 5m
         </button>
         <button
           onClick={() => onSnooze(15)}
-          className="flex-1 text-xs px-2 py-1.5 rounded-lg border border-stone-200 text-stone-600 hover:bg-stone-50"
+          className="flex-1 text-xs px-2 py-1.5 rounded-lg border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800"
         >
           Snooze 15m
         </button>
         <button
           onClick={() => onSnooze(60)}
-          className="flex-1 text-xs px-2 py-1.5 rounded-lg border border-stone-200 text-stone-600 hover:bg-stone-50"
+          className="flex-1 text-xs px-2 py-1.5 rounded-lg border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800"
         >
           1 hour
         </button>
@@ -460,7 +460,7 @@ function NowView({ reminders }: { reminders: ReturnType<typeof useReminders> }) 
       />
       {!active && <StartActivityCard onStart={  startActivity} />}
       {active && (
-        <p className="text-center text-xs text-stone-400">
+        <p className="text-center text-xs text-stone-400 dark:text-stone-500">
           You're tracking an activity right now. End it to save a reflection, or discard it
           if it wasn't what you meant to log.
         </p>
@@ -479,24 +479,24 @@ function NowView({ reminders }: { reminders: ReturnType<typeof useReminders> }) 
 function ReminderSettingsCard({ reminders }: { reminders: ReturnType<typeof useReminders> }) {
   const [showInstallHelp, setShowInstallHelp] = useState(false)
   return (
-    <div className="rounded-3xl bg-white border border-stone-200/60 shadow-sm p-6">
+    <div className="rounded-3xl bg-white dark:bg-stone-900 border border-stone-200/60 dark:border-stone-800 shadow-sm p-6">
       <div className="flex items-center gap-2 mb-4">
-        <div className="w-8 h-8 rounded-xl bg-violet-100 text-violet-600 flex items-center justify-center">
+        <div className="w-8 h-8 rounded-xl bg-violet-100 dark:bg-violet-900/40 text-violet-600 dark:text-violet-400 flex items-center justify-center">
           <Bell className="w-4 h-4" />
         </div>
         <div>
-          <h2 className="text-lg font-semibold text-stone-800">Reminders</h2>
-          <p className="text-xs text-stone-500">
+          <h2 className="text-lg font-semibold text-stone-800 dark:text-stone-100">Reminders</h2>
+          <p className="text-xs text-stone-500 dark:text-stone-400">
             Gentle nudges before each scheduled activity, plus an optional daily check-in.
           </p>
         </div>
       </div>
 
       {/* Permission row */}
-      <div className="flex items-center justify-between gap-3 py-3 border-t border-stone-100">
+      <div className="flex items-center justify-between gap-3 py-3 border-t border-stone-100 dark:border-stone-800">
         <div>
-          <p className="text-sm font-medium text-stone-700">Browser notifications</p>
-          <p className="text-xs text-stone-500 mt-0.5">
+          <p className="text-sm font-medium text-stone-700 dark:text-stone-200">Browser notifications</p>
+          <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
             {reminders.permission === 'granted'
               ? 'On — you’ll be nudged even if this tab is in the background. Your choice is saved for next time.'
               : reminders.permission === 'denied'
@@ -522,65 +522,65 @@ function ReminderSettingsCard({ reminders }: { reminders: ReturnType<typeof useR
           </button>
         )}
         {reminders.permission === 'granted' && (
-          <span className="text-xs text-emerald-600 font-medium shrink-0">✓ On</span>
+          <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium shrink-0">✓ On</span>
         )}
       </div>
 
       {/* Daily check-in row */}
-      <div className="flex items-center justify-between gap-3 py-3 border-t border-stone-100">
+      <div className="flex items-center justify-between gap-3 py-3 border-t border-stone-100 dark:border-stone-800">
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-stone-700">Daily check-in reminder</p>
-          <p className="text-xs text-stone-500 mt-0.5">
+          <p className="text-sm font-medium text-stone-700 dark:text-stone-200">Daily check-in reminder</p>
+          <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
             A gentle nudge to start your day mindfully.
           </p>
         </div>
         <button
           onClick={() => reminders.setDailyCheckIn({ enabled: !reminders.daily.enabled })}
           className={`relative w-11 h-6 rounded-full transition shrink-0 ${
-            reminders.daily.enabled ? 'bg-emerald-500' : 'bg-stone-300'
+            reminders.daily.enabled ? 'bg-emerald-500' : 'bg-stone-300 dark:bg-stone-600'
           }`}
           aria-label="Toggle daily check-in"
         >
           <span
-            className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition ${
+            className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white dark:bg-stone-900 rounded-full shadow-sm transition ${
               reminders.daily.enabled ? 'translate-x-5' : ''
             }`}
           />
         </button>
       </div>
       {reminders.daily.enabled && (
-        <div className="flex items-center gap-2 py-3 border-t border-stone-100">
-          <Clock className="w-4 h-4 text-stone-400" />
-          <span className="text-sm text-stone-600">Remind me at</span>
+        <div className="flex items-center gap-2 py-3 border-t border-stone-100 dark:border-stone-800">
+          <Clock className="w-4 h-4 text-stone-400 dark:text-stone-500" />
+          <span className="text-sm text-stone-600 dark:text-stone-300">Remind me at</span>
           <input
             type="time"
             value={reminders.daily.time}
             onChange={(e) => reminders.setDailyCheckIn({ time: e.target.value })}
-            className="rounded-lg border border-stone-200 px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300"
+            className="rounded-lg border border-stone-200 dark:border-stone-700 px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 dark:focus:ring-emerald-700"
           />
         </div>
       )}
 
       {/* End-of-day reflection row */}
-      <div className="flex items-center justify-between gap-3 py-3 border-t border-stone-100">
+      <div className="flex items-center justify-between gap-3 py-3 border-t border-stone-100 dark:border-stone-800">
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-stone-700 flex items-center gap-1.5">
+          <p className="text-sm font-medium text-stone-700 dark:text-stone-200 flex items-center gap-1.5">
             <Moon className="w-3.5 h-3.5 text-indigo-500" />
             End-of-day reflection
           </p>
-          <p className="text-xs text-stone-500 mt-0.5">
+          <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
             A gentle prompt to look back at your day and what moved you toward healing.
           </p>
         </div>
         <button
           onClick={() => reminders.setEndOfDay({ enabled: !reminders.eod.enabled })}
           className={`relative w-11 h-6 rounded-full transition shrink-0 ${
-            reminders.eod.enabled ? 'bg-indigo-500' : 'bg-stone-300'
+            reminders.eod.enabled ? 'bg-indigo-500' : 'bg-stone-300 dark:bg-stone-600'
           }`}
           aria-label="Toggle end-of-day reflection"
         >
           <span
-            className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition ${
+            className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white dark:bg-stone-900 rounded-full shadow-sm transition ${
               reminders.eod.enabled ? 'translate-x-5' : ''
             }`}
           />
@@ -588,18 +588,18 @@ function ReminderSettingsCard({ reminders }: { reminders: ReturnType<typeof useR
       </div>
       {reminders.eod.enabled && (
         <>
-          <div className="flex items-center gap-2 py-3 border-t border-stone-100">
-            <Clock className="w-4 h-4 text-stone-400" />
-            <span className="text-sm text-stone-600">Reflect at</span>
+          <div className="flex items-center gap-2 py-3 border-t border-stone-100 dark:border-stone-800">
+            <Clock className="w-4 h-4 text-stone-400 dark:text-stone-500" />
+            <span className="text-sm text-stone-600 dark:text-stone-300">Reflect at</span>
             <input
               type="time"
               value={reminders.eod.time}
               onChange={(e) => reminders.setEndOfDay({ time: e.target.value })}
-              className="rounded-lg border border-stone-200 px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300"
+              className="rounded-lg border border-stone-200 dark:border-stone-700 px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 dark:focus:ring-emerald-700"
             />
             <button
               onClick={reminders.openEodModal}
-              className="ml-auto text-xs text-stone-500 hover:text-stone-700 underline"
+              className="ml-auto text-xs text-stone-500 dark:text-stone-400 hover:text-stone-700 underline"
             >
               Open now
             </button>
@@ -607,17 +607,17 @@ function ReminderSettingsCard({ reminders }: { reminders: ReturnType<typeof useR
         </>
       )}
 
-      <p className="text-xs text-stone-400 mt-3 leading-relaxed">
+      <p className="text-xs text-stone-400 dark:text-stone-500 mt-3 leading-relaxed">
         Per-activity reminders are set when you create or edit a planned activity —
         look for the “Reminder” chips. Your browser needs to be open (even in the
         background) for notifications to fire.
       </p>
 
       {/* How to install — make reminders work even when the browser is closed */}
-      <div className="mt-3 border-t border-stone-100 pt-3">
+      <div className="mt-3 border-t border-stone-100 dark:border-stone-800 pt-3">
         <button
           onClick={() => setShowInstallHelp((v) => !v)}
-          className="flex items-center gap-2 text-sm font-medium text-emerald-700 hover:text-emerald-800"
+          className="flex items-center gap-2 text-sm font-medium text-emerald-700 dark:text-emerald-400 hover:text-emerald-800"
         >
           <Download className="w-4 h-4" />
           How to install Tender Hours
@@ -632,7 +632,7 @@ function ReminderSettingsCard({ reminders }: { reminders: ReturnType<typeof useR
 // ─── Install help content (per-platform instructions) ────────────────────────
 function InstallHelpContent() {
   return (
-    <div className="mt-3 space-y-3 text-sm text-stone-600">
+    <div className="mt-3 space-y-3 text-sm text-stone-600 dark:text-stone-300">
       <p>
         Installing Tender Hours as an app means reminders will fire even when
         your browser is closed (on Android and modern iPhone). It also opens
@@ -673,7 +673,7 @@ function InstallHelpContent() {
         ]}
       />
 
-      <div className="rounded-xl bg-emerald-50 border border-emerald-100 p-3">
+      <div className="rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900 p-3">
         <p className="text-xs text-emerald-800">
           <strong>Need to enable notifications after installing?</strong> Tap
           the bell icon in the top-right of Tender Hours, then click
@@ -696,14 +696,14 @@ function InstallStep({
   steps: React.ReactNode[]
 }) {
   return (
-    <div className="rounded-xl bg-stone-50 border border-stone-100 p-3">
-      <p className="font-medium text-stone-800 flex items-center gap-2 mb-2">
+    <div className="rounded-xl bg-stone-50 dark:bg-stone-800/60 border border-stone-100 dark:border-stone-800 p-3">
+      <p className="font-medium text-stone-800 dark:text-stone-100 flex items-center gap-2 mb-2">
         <span className="w-5 h-5 rounded-full bg-emerald-500 text-white text-xs font-bold flex items-center justify-center">
           {n}
         </span>
         {title}
       </p>
-      <ol className="space-y-1.5 text-xs text-stone-600 pl-7 list-decimal">
+      <ol className="space-y-1.5 text-xs text-stone-600 dark:text-stone-300 pl-7 list-decimal">
         {steps.map((s, i) => (
           <li key={i}>{s}</li>
         ))}
@@ -747,16 +747,16 @@ function ActiveActivityCard({
   const cat = CATEGORIES[active.category as ActivityCategory] ?? CATEGORIES.other
 
   return (
-    <div className="rounded-3xl bg-white border border-emerald-200/60 shadow-sm overflow-hidden">
+    <div className="rounded-3xl bg-white dark:bg-stone-900 border border-emerald-200/60 shadow-sm overflow-hidden">
       <div className={`h-2 ${cat.dot}`} />
       <div className="p-6">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <p className="text-xs uppercase tracking-wide text-emerald-600 font-semibold">
+            <p className="text-xs uppercase tracking-wide text-emerald-600 dark:text-emerald-400 font-semibold">
               In progress · started {formatTime(active.startTime)}
             </p>
-            <h2 className="text-2xl font-semibold text-stone-800 mt-1">{active.title}</h2>
-            {active.notes && <p className="text-stone-500 mt-1 text-sm">{active.notes}</p>}
+            <h2 className="text-2xl font-semibold text-stone-800 dark:text-stone-100 mt-1">{active.title}</h2>
+            {active.notes && <p className="text-stone-500 dark:text-stone-400 mt-1 text-sm">{active.notes}</p>}
             <div className="flex items-center gap-2 mt-3 flex-wrap">
               <span
                 className={`inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full border ${cat.chip}`}
@@ -765,19 +765,19 @@ function ActiveActivityCard({
                 {cat.label}
               </span>
               {active.moodBefore && (
-                <span className="text-xs px-2.5 py-1 rounded-full bg-stone-100 text-stone-600 border border-stone-200">
+                <span className="text-xs px-2.5 py-1 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 border border-stone-200 dark:border-stone-700">
                   Mood before: {active.moodBefore}/5
                 </span>
               )}
             </div>
           </div>
           <div className="text-right">
-            <div className="text-4xl font-mono tabular-nums text-stone-800">
+            <div className="text-4xl font-mono tabular-nums text-stone-800 dark:text-stone-100">
               {h > 0 ? `${h}:` : ''}
               {String(m).padStart(2, '0')}:
               {String(s).padStart(2, '0')}
             </div>
-            <p className="text-xs text-stone-400 mt-1">{formatDuration(elapsedMin)}</p>
+            <p className="text-xs text-stone-400 dark:text-stone-500 mt-1">{formatDuration(elapsedMin)}</p>
           </div>
         </div>
 
@@ -792,7 +792,7 @@ function ActiveActivityCard({
             </button>
             <button
               onClick={onDiscard}
-              className="px-4 py-3 rounded-xl border border-stone-200 text-stone-600 hover:bg-stone-50 transition"
+              className="px-4 py-3 rounded-xl border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800 transition"
               aria-label="Discard activity"
             >
               <Trash2 className="w-4 h-4" />
@@ -837,9 +837,9 @@ function ReflectionForm({
   onSave: () => void
 }) {
   return (
-    <div className="mt-6 border-t border-stone-200 pt-5 space-y-4">
+    <div className="mt-6 border-t border-stone-200 dark:border-stone-700 pt-5 space-y-4">
       <div>
-        <label className="text-sm font-medium text-stone-700">
+        <label className="text-sm font-medium text-stone-700 dark:text-stone-200">
           Did this move you toward healing?
         </label>
         <div className="grid grid-cols-2 gap-2 mt-2">
@@ -853,7 +853,7 @@ function ReflectionForm({
                 className={`flex items-center gap-2 px-3 py-2.5 rounded-xl border text-sm font-medium transition ${
                   selected
                     ? `${h.chip} ring-2 ring-offset-1 ring-stone-300`
-                    : 'border-stone-200 text-stone-600 hover:bg-stone-50'
+                    : 'border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800'
                 }`}
               >
                 <span className="text-lg">{h.emoji}</span>
@@ -864,7 +864,7 @@ function ReflectionForm({
         </div>
       </div>
       <div>
-        <label className="text-sm font-medium text-stone-700">Mood after (1-5)</label>
+        <label className="text-sm font-medium text-stone-700 dark:text-stone-200">Mood after (1-5)</label>
         <div className="flex items-center gap-2 mt-2">
           {[1, 2, 3, 4, 5].map((n) => (
             <button
@@ -873,31 +873,31 @@ function ReflectionForm({
               className={`w-10 h-10 rounded-full border flex items-center justify-center text-sm font-semibold transition ${
                 moodAfter === n
                   ? 'bg-emerald-500 text-white border-emerald-500'
-                  : 'border-stone-200 text-stone-500 hover:bg-stone-50'
+                  : 'border-stone-200 dark:border-stone-700 text-stone-500 dark:text-stone-400 hover:bg-stone-50 dark:hover:bg-stone-800'
               }`}
             >
               {n}
             </button>
           ))}
-          <div className="ml-2 text-stone-400">
+          <div className="ml-2 text-stone-400 dark:text-stone-500">
             {moodAfter <= 2 ? <Frown className="w-5 h-5" /> : moodAfter === 3 ? <Meh className="w-5 h-5" /> : <Smile className="w-5 h-5" />}
           </div>
         </div>
       </div>
       <div>
-        <label className="text-sm font-medium text-stone-700">A short note (optional)</label>
+        <label className="text-sm font-medium text-stone-700 dark:text-stone-200">A short note (optional)</label>
         <textarea
           value={healingNote}
           onChange={(e) => setHealingNote(e.target.value)}
           rows={3}
           placeholder="How did this feel? What did you notice?"
-          className="mt-2 w-full rounded-xl border border-stone-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 resize-none"
+          className="mt-2 w-full rounded-xl border border-stone-200 dark:border-stone-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 dark:focus:ring-emerald-700 resize-none"
         />
       </div>
       <div className="flex gap-2">
         <button
           onClick={onCancel}
-          className="px-4 py-2.5 rounded-xl border border-stone-200 text-stone-600 hover:bg-stone-50"
+          className="px-4 py-2.5 rounded-xl border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800"
         >
           Back
         </button>
@@ -929,14 +929,14 @@ function StartActivityCard({
   const [moodBefore, setMoodBefore] = useState(3)
 
   return (
-    <div className="rounded-3xl bg-white border border-stone-200/60 shadow-sm p-6">
+    <div className="rounded-3xl bg-white dark:bg-stone-900 border border-stone-200/60 dark:border-stone-800 shadow-sm p-6">
       <div className="flex items-center gap-2 mb-4">
-        <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center">
+        <div className="w-8 h-8 rounded-xl bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
           <Play className="w-4 h-4" />
         </div>
         <div>
-          <h2 className="text-lg font-semibold text-stone-800">What are you doing right now?</h2>
-          <p className="text-xs text-stone-500">Start a live timer and reflect on it when you finish.</p>
+          <h2 className="text-lg font-semibold text-stone-800 dark:text-stone-100">What are you doing right now?</h2>
+          <p className="text-xs text-stone-500 dark:text-stone-400">Start a live timer and reflect on it when you finish.</p>
         </div>
       </div>
       <div className="space-y-4">
@@ -945,10 +945,10 @@ function StartActivityCard({
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="e.g. Walking in the park, journaling, calling a friend…"
-          className="w-full rounded-xl border border-stone-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300"
+          className="w-full rounded-xl border border-stone-200 dark:border-stone-700 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 dark:focus:ring-emerald-700"
         />
         <div>
-          <label className="text-xs uppercase tracking-wide text-stone-500 font-semibold">
+          <label className="text-xs uppercase tracking-wide text-stone-500 dark:text-stone-400 font-semibold">
             Category
           </label>
           <div className="mt-2 flex gap-1.5 flex-wrap">
@@ -960,7 +960,7 @@ function StartActivityCard({
                   key={c}
                   onClick={() => setCategory(c)}
                   className={`flex items-center gap-1 px-3 py-1.5 rounded-full border text-xs font-medium transition ${
-                    selected ? `${meta.chip} ring-2 ring-offset-1 ring-stone-300` : 'border-stone-200 text-stone-500 hover:bg-stone-50'
+                    selected ? `${meta.chip} ring-2 ring-offset-1 ring-stone-300` : 'border-stone-200 dark:border-stone-700 text-stone-500 dark:text-stone-400 hover:bg-stone-50 dark:hover:bg-stone-800'
                   }`}
                 >
                   <span>{meta.emoji}</span>
@@ -971,7 +971,7 @@ function StartActivityCard({
           </div>
         </div>
         <div>
-          <label className="text-xs uppercase tracking-wide text-stone-500 font-semibold">
+          <label className="text-xs uppercase tracking-wide text-stone-500 dark:text-stone-400 font-semibold">
             Mood before (1-5)
           </label>
           <div className="flex items-center gap-2 mt-2">
@@ -982,7 +982,7 @@ function StartActivityCard({
                 className={`w-9 h-9 rounded-full border flex items-center justify-center text-sm font-semibold transition ${
                   moodBefore === n
                     ? 'bg-emerald-500 text-white border-emerald-500'
-                    : 'border-stone-200 text-stone-500 hover:bg-stone-50'
+                    : 'border-stone-200 dark:border-stone-700 text-stone-500 dark:text-stone-400 hover:bg-stone-50 dark:hover:bg-stone-800'
                 }`}
               >
                 {n}
@@ -995,7 +995,7 @@ function StartActivityCard({
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           placeholder="Notes (optional)"
-          className="w-full rounded-xl border border-stone-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300"
+          className="w-full rounded-xl border border-stone-200 dark:border-stone-700 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 dark:focus:ring-emerald-700"
         />
         <button
           onClick={() => {
@@ -1084,14 +1084,14 @@ function QuickLogCard({ onSaved }: { onSaved: () => void }) {
   }
 
   return (
-    <div className="rounded-3xl bg-white border border-stone-200/60 shadow-sm p-6">
+    <div className="rounded-3xl bg-white dark:bg-stone-900 border border-stone-200/60 dark:border-stone-800 shadow-sm p-6">
       <div className="flex items-center gap-2 mb-4">
-        <div className="w-8 h-8 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center">
+        <div className="w-8 h-8 rounded-xl bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 flex items-center justify-center">
           <ActivityIcon className="w-4 h-4" />
         </div>
         <div>
-          <h2 className="text-lg font-semibold text-stone-800">Quick log a past activity</h2>
-          <p className="text-xs text-stone-500">Already finished something? Pick a start and finish time — the duration works itself out.</p>
+          <h2 className="text-lg font-semibold text-stone-800 dark:text-stone-100">Quick log a past activity</h2>
+          <p className="text-xs text-stone-500 dark:text-stone-400">Already finished something? Pick a start and finish time — the duration works itself out.</p>
         </div>
       </div>
       <div className="grid sm:grid-cols-2 gap-3">
@@ -1100,10 +1100,10 @@ function QuickLogCard({ onSaved }: { onSaved: () => void }) {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="What did you do?"
-          className="rounded-xl border border-stone-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 sm:col-span-2"
+          className="rounded-xl border border-stone-200 dark:border-stone-700 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 dark:focus:ring-emerald-700 sm:col-span-2"
         />
         <div>
-          <label className="text-xs uppercase tracking-wide text-stone-500 font-semibold">
+          <label className="text-xs uppercase tracking-wide text-stone-500 dark:text-stone-400 font-semibold">
             Start time
           </label>
           <input
@@ -1114,23 +1114,23 @@ function QuickLogCard({ onSaved }: { onSaved: () => void }) {
               setStartTime(v)
               if (hhmmToMinutes(finishTime) <= hhmmToMinutes(v)) setFinishTime(minutesToHHMM(hhmmToMinutes(v) + 30))
             }}
-            className="mt-1 w-full rounded-xl border border-stone-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300"
+            className="mt-1 w-full rounded-xl border border-stone-200 dark:border-stone-700 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 dark:focus:ring-emerald-700"
           />
         </div>
         <div>
-          <label className="text-xs uppercase tracking-wide text-stone-500 font-semibold">
+          <label className="text-xs uppercase tracking-wide text-stone-500 dark:text-stone-400 font-semibold">
             Finish time
           </label>
           <input
             type="time"
             value={finishTime}
             onChange={(e) => setFinishTime(e.target.value)}
-            className="mt-1 w-full rounded-xl border border-stone-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300"
+            className="mt-1 w-full rounded-xl border border-stone-200 dark:border-stone-700 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 dark:focus:ring-emerald-700"
           />
-          <p className="mt-1 text-xs text-stone-400">= {formatDuration(durationMin)} — no maths needed</p>
+          <p className="mt-1 text-xs text-stone-400 dark:text-stone-500">= {formatDuration(durationMin)} — no maths needed</p>
         </div>
         <div className="sm:col-span-2">
-          <label className="text-xs uppercase tracking-wide text-stone-500 font-semibold">
+          <label className="text-xs uppercase tracking-wide text-stone-500 dark:text-stone-400 font-semibold">
             Category
           </label>
           <div className="mt-2 flex gap-1.5 flex-wrap">
@@ -1142,7 +1142,7 @@ function QuickLogCard({ onSaved }: { onSaved: () => void }) {
                   key={c}
                   onClick={() => setCategory(c)}
                   className={`flex items-center gap-1 px-3 py-1.5 rounded-full border text-xs font-medium transition ${
-                    selected ? `${meta.chip} ring-2 ring-offset-1 ring-stone-300` : 'border-stone-200 text-stone-500 hover:bg-stone-50'
+                    selected ? `${meta.chip} ring-2 ring-offset-1 ring-stone-300` : 'border-stone-200 dark:border-stone-700 text-stone-500 dark:text-stone-400 hover:bg-stone-50 dark:hover:bg-stone-800'
                   }`}
                 >
                   <span>{meta.emoji}</span>
@@ -1153,7 +1153,7 @@ function QuickLogCard({ onSaved }: { onSaved: () => void }) {
           </div>
         </div>
         <div className="sm:col-span-2">
-          <label className="text-xs uppercase tracking-wide text-stone-500 font-semibold">
+          <label className="text-xs uppercase tracking-wide text-stone-500 dark:text-stone-400 font-semibold">
             Did it move you toward healing?
           </label>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-2">
@@ -1165,7 +1165,7 @@ function QuickLogCard({ onSaved }: { onSaved: () => void }) {
                   key={key}
                   onClick={() => setHealingImpact(key)}
                   className={`flex items-center gap-2 px-2 py-2 rounded-xl border text-xs font-medium transition ${
-                    selected ? `${h.chip} ring-2 ring-offset-1 ring-stone-300` : 'border-stone-200 text-stone-600 hover:bg-stone-50'
+                    selected ? `${h.chip} ring-2 ring-offset-1 ring-stone-300` : 'border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800'
                   }`}
                 >
                   <span className="text-base">{h.emoji}</span>
@@ -1180,7 +1180,7 @@ function QuickLogCard({ onSaved }: { onSaved: () => void }) {
           onChange={(e) => setHealingNote(e.target.value)}
           rows={2}
           placeholder="A short reflection (optional)"
-          className="rounded-xl border border-stone-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 sm:col-span-2 resize-none"
+          className="rounded-xl border border-stone-200 dark:border-stone-700 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 dark:focus:ring-emerald-700 sm:col-span-2 resize-none"
         />
       </div>
       <button
@@ -1333,7 +1333,7 @@ function DayView({ date }: { date: string }) {
       )}
 
       {loading ? (
-        <div className="text-center text-stone-400 py-12 text-sm">Loading…</div>
+        <div className="text-center text-stone-400 dark:text-stone-500 py-12 text-sm">Loading…</div>
       ) : activities.length === 0 ? (
         <EmptyDay date={date} />
       ) : (
@@ -1427,10 +1427,10 @@ function DayHeader({ date, healingMin, total }: { date: string; healingMin: numb
 
 function EmptyDay({ date }: { date: string }) {
   return (
-    <div className="rounded-3xl bg-white border border-dashed border-stone-200 p-12 text-center">
+    <div className="rounded-3xl bg-white dark:bg-stone-900 border border-dashed border-stone-200 dark:border-stone-700 p-12 text-center">
       <div className="text-4xl">🌱</div>
-      <h3 className="text-lg font-semibold text-stone-700 mt-2">A fresh day</h3>
-      <p className="text-sm text-stone-500 mt-1">
+      <h3 className="text-lg font-semibold text-stone-700 dark:text-stone-200 mt-2">A fresh day</h3>
+      <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">
         Nothing logged for {relativeDayLabel(date)} yet. Add a planned activity or start
         tracking something right now.
       </p>
@@ -1449,7 +1449,7 @@ function Section({
 }) {
   return (
     <section>
-      <h3 className="flex items-center gap-2 text-sm font-semibold text-stone-500 uppercase tracking-wide mb-3">
+      <h3 className="flex items-center gap-2 text-sm font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wide mb-3">
         {icon}
         {title}
       </h3>
@@ -1482,14 +1482,14 @@ function ActivityRow({
     : null
 
   return (
-    <div className="rounded-2xl bg-white border border-stone-200/60 p-4 hover:border-stone-300 transition">
+    <div className="rounded-2xl bg-white dark:bg-stone-900 border border-stone-200/60 dark:border-stone-800 p-4 hover:border-stone-300 transition">
       <div className="flex items-start gap-3">
         <div className={`w-2 h-2 mt-1.5 rounded-full ${cat.dot}`} />
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2">
             <div className="min-w-0">
-              <p className="font-medium text-stone-800 truncate">{a.title}</p>
-              <p className="text-xs text-stone-500 mt-0.5">
+              <p className="font-medium text-stone-800 dark:text-stone-100 truncate">{a.title}</p>
+              <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
                 {formatTime(a.startTime)}
                 {a.endTime ? ` – ${formatTime(a.endTime)}` : ''}
                 {a.durationMin ? ` · ${formatDuration(a.durationMin)}` : ''}
@@ -1501,7 +1501,7 @@ function ActivityRow({
               {status.label}
             </span>
           </div>
-          {a.notes && <p className="text-sm text-stone-500 mt-2">{a.notes}</p>}
+          {a.notes && <p className="text-sm text-stone-500 dark:text-stone-400 mt-2">{a.notes}</p>}
           <div className="flex items-center gap-2 mt-2 flex-wrap">
             <span
               className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full border ${cat.chip}`}
@@ -1516,12 +1516,12 @@ function ActivityRow({
               </span>
             )}
             {a.moodBefore != null && a.moodAfter != null && (
-              <span className="text-xs px-2 py-0.5 rounded-full bg-stone-100 text-stone-600 border border-stone-200">
+              <span className="text-xs px-2 py-0.5 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 border border-stone-200 dark:border-stone-700">
                 Mood {a.moodBefore} → {a.moodAfter}
               </span>
             )}
             {a.status === 'planned' && a.reminderMin != null && (
-              <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-violet-50 text-violet-700 border border-violet-200">
+              <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-violet-50 dark:bg-violet-950/40 text-violet-700 dark:text-violet-400 border border-violet-200 dark:border-violet-800">
                 <Bell className="w-3 h-3" />
                 {a.reminderMin === 0
                   ? 'Reminder at start'
@@ -1529,20 +1529,20 @@ function ActivityRow({
               </span>
             )}
             {a.isRecurrenceTemplate && (
-              <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-sky-50 text-sky-700 border border-sky-200">
+              <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-sky-50 dark:bg-sky-950/40 text-sky-700 dark:text-sky-400 border border-sky-200 dark:border-sky-800">
                 <Repeat className="w-3 h-3" />
                 {describeRule(decodeRule(a.recurrenceRule))}
               </span>
             )}
             {!a.isRecurrenceTemplate && a.recurrenceTemplateId && (
-              <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-sky-50/50 text-sky-600 border border-sky-200">
+              <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-sky-50/50 dark:bg-sky-950/40 text-sky-600 dark:text-sky-400 border border-sky-200 dark:border-sky-800">
                 <Repeat className="w-3 h-3" />
                 Recurring
               </span>
             )}
           </div>
           {a.healingNote && (
-            <p className="text-sm text-stone-600 mt-2 italic border-l-2 border-emerald-300 pl-3">
+            <p className="text-sm text-stone-600 dark:text-stone-300 mt-2 italic border-l-2 border-emerald-300 dark:border-emerald-700 pl-3">
               {a.healingNote}
             </p>
           )}
@@ -1589,8 +1589,8 @@ function ActionButton({
     tone === 'primary'
       ? 'bg-emerald-500 hover:bg-emerald-600 text-white border-emerald-500'
       : tone === 'danger'
-      ? 'border-stone-200 text-stone-500 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200'
-      : 'border-stone-200 text-stone-600 hover:bg-stone-50'
+      ? 'border-stone-200 dark:border-stone-700 text-stone-500 dark:text-stone-400 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200'
+      : 'border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800'
   return (
     <button
       onClick={onClick}
@@ -1656,18 +1656,18 @@ function PlannedActivityForm({
   }
 
   return (
-    <div className="rounded-2xl bg-white border border-emerald-200/60 p-4 space-y-3">
-      <h4 className="font-semibold text-stone-700">Add a planned activity</h4>
+    <div className="rounded-2xl bg-white dark:bg-stone-900 border border-emerald-200/60 p-4 space-y-3">
+      <h4 className="font-semibold text-stone-700 dark:text-stone-200">Add a planned activity</h4>
       <input
         type="text"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         placeholder="What will you do?"
-        className="w-full rounded-xl border border-stone-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300"
+        className="w-full rounded-xl border border-stone-200 dark:border-stone-700 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 dark:focus:ring-emerald-700"
       />
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="text-xs uppercase tracking-wide text-stone-500 font-semibold">
+          <label className="text-xs uppercase tracking-wide text-stone-500 dark:text-stone-400 font-semibold">
             Starts
           </label>
           <input
@@ -1678,24 +1678,24 @@ function PlannedActivityForm({
               setTime(v)
               if (hhmmToMinutes(endTime) <= hhmmToMinutes(v)) setEndTime(minutesToHHMM(hhmmToMinutes(v) + 30))
             }}
-            className="mt-1 w-full rounded-xl border border-stone-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300"
+            className="mt-1 w-full rounded-xl border border-stone-200 dark:border-stone-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 dark:focus:ring-emerald-700"
           />
         </div>
         <div>
-          <label className="text-xs uppercase tracking-wide text-stone-500 font-semibold">
+          <label className="text-xs uppercase tracking-wide text-stone-500 dark:text-stone-400 font-semibold">
             Ends
           </label>
           <input
             type="time"
             value={endTime}
             onChange={(e) => setEndTime(e.target.value)}
-            className="mt-1 w-full rounded-xl border border-stone-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300"
+            className="mt-1 w-full rounded-xl border border-stone-200 dark:border-stone-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 dark:focus:ring-emerald-700"
           />
-          <p className="mt-1 text-xs text-stone-400">= {formatDuration(durationMin)}</p>
+          <p className="mt-1 text-xs text-stone-400 dark:text-stone-500">= {formatDuration(durationMin)}</p>
         </div>
       </div>
       <div>
-        <label className="text-xs uppercase tracking-wide text-stone-500 font-semibold">
+        <label className="text-xs uppercase tracking-wide text-stone-500 dark:text-stone-400 font-semibold">
           Category
         </label>
         <div className="mt-2 flex gap-1.5 flex-wrap">
@@ -1707,7 +1707,7 @@ function PlannedActivityForm({
                 key={c}
                 onClick={() => setCategory(c)}
                 className={`flex items-center gap-1 px-3 py-1.5 rounded-full border text-xs font-medium transition ${
-                  selected ? `${meta.chip} ring-2 ring-offset-1 ring-stone-300` : 'border-stone-200 text-stone-500 hover:bg-stone-50'
+                  selected ? `${meta.chip} ring-2 ring-offset-1 ring-stone-300` : 'border-stone-200 dark:border-stone-700 text-stone-500 dark:text-stone-400 hover:bg-stone-50 dark:hover:bg-stone-800'
                 }`}
               >
                 <span>{meta.emoji}</span>
@@ -1722,10 +1722,10 @@ function PlannedActivityForm({
         value={notes}
         onChange={(e) => setNotes(e.target.value)}
         placeholder="Notes (optional)"
-        className="w-full rounded-xl border border-stone-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300"
+        className="w-full rounded-xl border border-stone-200 dark:border-stone-700 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 dark:focus:ring-emerald-700"
       />
       <div>
-        <label className="text-xs uppercase tracking-wide text-stone-500 font-semibold">
+        <label className="text-xs uppercase tracking-wide text-stone-500 dark:text-stone-400 font-semibold">
           Repeat
         </label>
         <div className="mt-2 flex gap-1.5 flex-wrap">
@@ -1741,8 +1741,8 @@ function PlannedActivityForm({
                 onClick={() => setRecurrenceRule(r.rule)}
                 className={`flex items-center gap-1 px-3 py-1.5 rounded-full border text-xs font-medium transition ${
                   selected
-                    ? 'bg-sky-100 text-sky-700 border-sky-300 ring-2 ring-offset-1 ring-stone-300'
-                    : 'border-stone-200 text-stone-500 hover:bg-stone-50'
+                    ? 'bg-sky-100 dark:bg-sky-900/40 text-sky-700 dark:text-sky-400 border-sky-300 ring-2 ring-offset-1 ring-stone-300'
+                    : 'border-stone-200 dark:border-stone-700 text-stone-500 dark:text-stone-400 hover:bg-stone-50 dark:hover:bg-stone-800'
                 }`}
               >
                 <Repeat className="w-3 h-3" />
@@ -1753,7 +1753,7 @@ function PlannedActivityForm({
         </div>
       </div>
       <div>
-        <label className="text-xs uppercase tracking-wide text-stone-500 font-semibold">
+        <label className="text-xs uppercase tracking-wide text-stone-500 dark:text-stone-400 font-semibold">
           Reminder
         </label>
         <div className="mt-2 flex gap-1.5 flex-wrap">
@@ -1765,8 +1765,8 @@ function PlannedActivityForm({
                 onClick={() => setReminderMin(r.value)}
                 className={`flex items-center gap-1 px-3 py-1.5 rounded-full border text-xs font-medium transition ${
                   selected
-                    ? 'bg-violet-100 text-violet-700 border-violet-300 ring-2 ring-offset-1 ring-stone-300'
-                    : 'border-stone-200 text-stone-500 hover:bg-stone-50'
+                    ? 'bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-400 border-violet-300 ring-2 ring-offset-1 ring-stone-300'
+                    : 'border-stone-200 dark:border-stone-700 text-stone-500 dark:text-stone-400 hover:bg-stone-50 dark:hover:bg-stone-800'
                 }`}
               >
                 <Bell className="w-3 h-3" />
@@ -1779,7 +1779,7 @@ function PlannedActivityForm({
       <div className="flex gap-2">
         <button
           onClick={onCancel}
-          className="px-4 py-2.5 rounded-xl border border-stone-200 text-stone-600 hover:bg-stone-50"
+          className="px-4 py-2.5 rounded-xl border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800"
         >
           Cancel
         </button>
@@ -1877,10 +1877,10 @@ function EditDialog({
 
   return (
     <div className="fixed inset-0 bg-black/40 z-50 flex items-end sm:items-center justify-center p-4">
-      <div className="bg-white rounded-3xl w-full max-w-lg shadow-xl max-h-[90vh] overflow-y-auto">
-        <div className="p-5 border-b border-stone-100 flex items-center justify-between">
-          <h3 className="text-lg font-semibold text-stone-800">Edit activity</h3>
-          <button onClick={onCancel} className="text-stone-400 hover:text-stone-600">
+      <div className="bg-white dark:bg-stone-900 rounded-3xl w-full max-w-lg shadow-xl max-h-[90vh] overflow-y-auto">
+        <div className="p-5 border-b border-stone-100 dark:border-stone-800 flex items-center justify-between">
+          <h3 className="text-lg font-semibold text-stone-800 dark:text-stone-100">Edit activity</h3>
+          <button onClick={onCancel} className="text-stone-400 dark:text-stone-500 hover:text-stone-600">
             ✕
           </button>
         </div>
@@ -1889,27 +1889,27 @@ function EditDialog({
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full rounded-xl border border-stone-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300"
+            className="w-full rounded-xl border border-stone-200 dark:border-stone-700 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 dark:focus:ring-emerald-700"
           />
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             placeholder="Notes"
             rows={2}
-            className="w-full rounded-xl border border-stone-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 resize-none"
+            className="w-full rounded-xl border border-stone-200 dark:border-stone-700 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 dark:focus:ring-emerald-700 resize-none"
           />
           <div className="grid grid-cols-3 gap-2">
             <div>
-              <label className="text-xs text-stone-500">Date</label>
+              <label className="text-xs text-stone-500 dark:text-stone-400">Date</label>
               <input
                 type="date"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="mt-1 w-full rounded-xl border border-stone-200 px-2 py-2 text-sm"
+                className="mt-1 w-full rounded-xl border border-stone-200 dark:border-stone-700 px-2 py-2 text-sm"
               />
             </div>
             <div>
-              <label className="text-xs text-stone-500">Start</label>
+              <label className="text-xs text-stone-500 dark:text-stone-400">Start</label>
               <input
                 type="time"
                 value={time}
@@ -1918,22 +1918,22 @@ function EditDialog({
                   setTime(v)
                   if (hhmmToMinutes(endTime) <= hhmmToMinutes(v)) setEndTime(minutesToHHMM(hhmmToMinutes(v) + 30))
                 }}
-                className="mt-1 w-full rounded-xl border border-stone-200 px-2 py-2 text-sm"
+                className="mt-1 w-full rounded-xl border border-stone-200 dark:border-stone-700 px-2 py-2 text-sm"
               />
             </div>
             <div>
-              <label className="text-xs text-stone-500">End</label>
+              <label className="text-xs text-stone-500 dark:text-stone-400">End</label>
               <input
                 type="time"
                 value={endTime}
                 onChange={(e) => setEndTime(e.target.value)}
-                className="mt-1 w-full rounded-xl border border-stone-200 px-2 py-2 text-sm"
+                className="mt-1 w-full rounded-xl border border-stone-200 dark:border-stone-700 px-2 py-2 text-sm"
               />
             </div>
           </div>
-          <p className="text-xs text-stone-400">= {formatDuration(durationMin)}</p>
+          <p className="text-xs text-stone-400 dark:text-stone-500">= {formatDuration(durationMin)}</p>
           <div>
-            <label className="text-xs uppercase tracking-wide text-stone-500 font-semibold">
+            <label className="text-xs uppercase tracking-wide text-stone-500 dark:text-stone-400 font-semibold">
               Category
             </label>
             <div className="mt-2 flex gap-1.5 flex-wrap">
@@ -1945,7 +1945,7 @@ function EditDialog({
                     key={c}
                     onClick={() => setCategory(c)}
                     className={`flex items-center gap-1 px-3 py-1.5 rounded-full border text-xs font-medium transition ${
-                      selected ? `${meta.chip} ring-2 ring-offset-1 ring-stone-300` : 'border-stone-200 text-stone-500 hover:bg-stone-50'
+                      selected ? `${meta.chip} ring-2 ring-offset-1 ring-stone-300` : 'border-stone-200 dark:border-stone-700 text-stone-500 dark:text-stone-400 hover:bg-stone-50 dark:hover:bg-stone-800'
                     }`}
                   >
                     <span>{meta.emoji}</span>
@@ -1956,7 +1956,7 @@ function EditDialog({
             </div>
           </div>
           <div>
-            <label className="text-xs uppercase tracking-wide text-stone-500 font-semibold">
+            <label className="text-xs uppercase tracking-wide text-stone-500 dark:text-stone-400 font-semibold">
               Status
             </label>
             <div className="grid grid-cols-4 gap-1 mt-2">
@@ -1967,7 +1967,7 @@ function EditDialog({
                   className={`px-2 py-1.5 rounded-lg border text-xs font-medium transition ${
                     status === s
                       ? 'bg-stone-800 text-white border-stone-800'
-                      : 'border-stone-200 text-stone-600 hover:bg-stone-50'
+                      : 'border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800'
                   }`}
                 >
                   {STATUS_LABELS[s].label}
@@ -1976,7 +1976,7 @@ function EditDialog({
             </div>
           </div>
           <div>
-            <label className="text-xs uppercase tracking-wide text-stone-500 font-semibold">
+            <label className="text-xs uppercase tracking-wide text-stone-500 dark:text-stone-400 font-semibold">
               Healing impact
             </label>
             <div className="grid grid-cols-2 gap-2 mt-2">
@@ -1984,8 +1984,8 @@ function EditDialog({
                 onClick={() => setHealingImpact(null)}
                 className={`px-2 py-1.5 rounded-lg border text-xs ${
                   healingImpact === null
-                    ? 'bg-stone-200 text-stone-700 border-stone-300'
-                    : 'border-stone-200 text-stone-500'
+                    ? 'bg-stone-200 dark:bg-stone-700 text-stone-700 dark:text-stone-200 border-stone-300 dark:border-stone-600'
+                    : 'border-stone-200 dark:border-stone-700 text-stone-500 dark:text-stone-400'
                 }`}
               >
                 Not set
@@ -1998,7 +1998,7 @@ function EditDialog({
                     key={key}
                     onClick={() => setHealingImpact(key)}
                     className={`flex items-center gap-1.5 px-2 py-1.5 rounded-lg border text-xs font-medium transition ${
-                      selected ? `${h.chip} ring-2 ring-offset-1 ring-stone-300` : 'border-stone-200 text-stone-600'
+                      selected ? `${h.chip} ring-2 ring-offset-1 ring-stone-300` : 'border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300'
                     }`}
                   >
                     <span>{h.emoji}</span>
@@ -2013,10 +2013,10 @@ function EditDialog({
             onChange={(e) => setHealingNote(e.target.value)}
             placeholder="Healing note"
             rows={2}
-            className="w-full rounded-xl border border-stone-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 resize-none"
+            className="w-full rounded-xl border border-stone-200 dark:border-stone-700 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 dark:focus:ring-emerald-700 resize-none"
           />
           <div>
-            <label className="text-xs uppercase tracking-wide text-stone-500 font-semibold">
+            <label className="text-xs uppercase tracking-wide text-stone-500 dark:text-stone-400 font-semibold">
               Reminder
             </label>
             <div className="mt-2 flex gap-1.5 flex-wrap">
@@ -2028,8 +2028,8 @@ function EditDialog({
                     onClick={() => setReminderMin(r.value)}
                     className={`flex items-center gap-1 px-3 py-1.5 rounded-full border text-xs font-medium transition ${
                       selected
-                        ? 'bg-violet-100 text-violet-700 border-violet-300 ring-2 ring-offset-1 ring-stone-300'
-                        : 'border-stone-200 text-stone-500 hover:bg-stone-50'
+                        ? 'bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-400 border-violet-300 ring-2 ring-offset-1 ring-stone-300'
+                        : 'border-stone-200 dark:border-stone-700 text-stone-500 dark:text-stone-400 hover:bg-stone-50 dark:hover:bg-stone-800'
                     }`}
                   >
                     <Bell className="w-3 h-3" />
@@ -2041,7 +2041,7 @@ function EditDialog({
           </div>
           {isTemplate && (
             <div>
-              <label className="text-xs uppercase tracking-wide text-stone-500 font-semibold flex items-center gap-1">
+              <label className="text-xs uppercase tracking-wide text-stone-500 dark:text-stone-400 font-semibold flex items-center gap-1">
                 <Repeat className="w-3 h-3" /> Recurrence
               </label>
               <div className="mt-2 flex gap-1.5 flex-wrap">
@@ -2057,8 +2057,8 @@ function EditDialog({
                       onClick={() => setRecurrenceRule(r.rule)}
                       className={`flex items-center gap-1 px-3 py-1.5 rounded-full border text-xs font-medium transition ${
                         selected
-                          ? 'bg-sky-100 text-sky-700 border-sky-300 ring-2 ring-offset-1 ring-stone-300'
-                          : 'border-stone-200 text-stone-500 hover:bg-stone-50'
+                          ? 'bg-sky-100 dark:bg-sky-900/40 text-sky-700 dark:text-sky-400 border-sky-300 ring-2 ring-offset-1 ring-stone-300'
+                          : 'border-stone-200 dark:border-stone-700 text-stone-500 dark:text-stone-400 hover:bg-stone-50 dark:hover:bg-stone-800'
                       }`}
                     >
                       {r.label}
@@ -2066,28 +2066,28 @@ function EditDialog({
                   )
                 })}
               </div>
-              <p className="text-xs text-stone-400 mt-2">
+              <p className="text-xs text-stone-400 dark:text-stone-500 mt-2">
                 Editing this recurring activity will update all future planned occurrences too.
               </p>
             </div>
           )}
           {!isTemplate && a.recurrenceTemplateId && (
-            <p className="text-xs text-sky-700 bg-sky-50 border border-sky-200 rounded-lg p-2 flex items-center gap-1.5">
+            <p className="text-xs text-sky-700 dark:text-sky-400 bg-sky-50 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-800 rounded-lg p-2 flex items-center gap-1.5">
               <Repeat className="w-3.5 h-3.5" />
               Part of a recurring series — edits apply only to this occurrence.
             </p>
           )}
         </div>
-        <div className="p-5 border-t border-stone-100 flex gap-2">
+        <div className="p-5 border-t border-stone-100 dark:border-stone-800 flex gap-2">
           <button
             onClick={remove}
-            className="px-3 py-2.5 rounded-xl border border-rose-200 text-rose-600 hover:bg-rose-50"
+            className="px-3 py-2.5 rounded-xl border border-rose-200 dark:border-rose-900 text-rose-600 dark:text-rose-400 hover:bg-rose-50"
           >
             <Trash2 className="w-4 h-4" />
           </button>
           <button
             onClick={onCancel}
-            className="px-4 py-2.5 rounded-xl border border-stone-200 text-stone-600 hover:bg-stone-50"
+            className="px-4 py-2.5 rounded-xl border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800"
           >
             Cancel
           </button>
@@ -2113,25 +2113,25 @@ function WeekView() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-stone-800">
+        <h2 className="text-lg font-semibold text-stone-800 dark:text-stone-100">
           Week of {shortDate(days[0])}
         </h2>
         <div className="flex gap-2">
           <button
             onClick={() => setAnchor(addDays(anchor, -7))}
-            className="px-3 py-2 rounded-lg border border-stone-200 hover:bg-stone-50"
+            className="px-3 py-2 rounded-lg border border-stone-200 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-800"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
           <button
             onClick={() => setAnchor(today)}
-            className="px-3 py-2 rounded-lg border border-stone-200 text-stone-600 hover:bg-stone-50 text-sm"
+            className="px-3 py-2 rounded-lg border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800 text-sm"
           >
             Today
           </button>
           <button
             onClick={() => setAnchor(addDays(anchor, 7))}
-            className="px-3 py-2 rounded-lg border border-stone-200 hover:bg-stone-50"
+            className="px-3 py-2 rounded-lg border border-stone-200 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-800"
           >
             <ChevronRight className="w-4 h-4" />
           </button>
@@ -2170,27 +2170,27 @@ function DayCard({ date }: { date: string }) {
 
   return (
     <div
-      className={`rounded-2xl bg-white border p-4 ${
-        isToday ? 'border-emerald-400 ring-2 ring-emerald-200' : 'border-stone-200/60'
+      className={`rounded-2xl bg-white dark:bg-stone-900 border p-4 ${
+        isToday ? 'border-emerald-400 ring-2 ring-emerald-200' : 'border-stone-200/60 dark:border-stone-800'
       }`}
     >
       <div className="flex items-baseline justify-between">
         <div>
-          <p className="text-xs uppercase tracking-wide text-stone-500 font-semibold">
+          <p className="text-xs uppercase tracking-wide text-stone-500 dark:text-stone-400 font-semibold">
             {relativeDayLabel(date)}
           </p>
-          <p className="text-sm text-stone-700">{shortDate(date)}</p>
+          <p className="text-sm text-stone-700 dark:text-stone-200">{shortDate(date)}</p>
         </div>
-        <span className="text-xs text-stone-400">{activities.length} items</span>
+        <span className="text-xs text-stone-400 dark:text-stone-500">{activities.length} items</span>
       </div>
       <div className="mt-3 flex gap-3 text-xs">
-        <span className="text-emerald-600 font-semibold">{healingMin} min healing</span>
-        <span className="text-sky-600">{planned.length} planned</span>
-        <span className="text-stone-500">{done.length} done</span>
+        <span className="text-emerald-600 dark:text-emerald-400 font-semibold">{healingMin} min healing</span>
+        <span className="text-sky-600 dark:text-sky-400">{planned.length} planned</span>
+        <span className="text-stone-500 dark:text-stone-400">{done.length} done</span>
       </div>
       <button
         onClick={() => setOpen((o) => !o)}
-        className="mt-3 w-full text-sm text-stone-600 hover:text-stone-900 border border-stone-200 hover:bg-stone-50 rounded-lg py-1.5"
+        className="mt-3 w-full text-sm text-stone-600 dark:text-stone-300 hover:text-stone-900 border border-stone-200 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-800 rounded-lg py-1.5"
       >
         {open ? 'Hide' : 'Open'} day
       </button>
@@ -2221,7 +2221,7 @@ function InsightsView() {
   }, [from, today])
 
   if (loading || !data) {
-    return <div className="text-center text-stone-400 py-12 text-sm">Crunching your healing data…</div>
+    return <div className="text-center text-stone-400 dark:text-stone-500 py-12 text-sm">Crunching your healing data…</div>
   }
 
   const maxCat = Math.max(1, ...Object.values(data.minutesByCategory).map((n: any) => Number(n)))
@@ -2245,31 +2245,31 @@ function InsightsView() {
           label="Activities"
           value={data.totalActivities}
           hint="last 14 days"
-          color="bg-emerald-100 text-emerald-700"
+          color="bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-400"
         />
         <StatCard
           label="Total minutes"
           value={data.totalMinutes}
           hint={formatDuration(data.totalMinutes)}
-          color="bg-teal-100 text-teal-700"
+          color="bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-400"
         />
         <StatCard
           label="Healing minutes"
           value={data.healingMinutes}
           hint={formatDuration(data.healingMinutes)}
-          color="bg-amber-100 text-amber-700"
+          color="bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400"
         />
         <StatCard
           label="Avg mood delta"
           value={data.avgMoodDelta ? (data.avgMoodDelta >= 0 ? '+' : '') + data.avgMoodDelta.toFixed(1) : '—'}
           hint="after − before"
-          color="bg-violet-100 text-violet-700"
+          color="bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-400"
         />
       </div>
 
-      <div className="rounded-3xl bg-white border border-stone-200/60 p-6">
-        <h3 className="text-lg font-semibold text-stone-800 mb-1">Minutes by category</h3>
-        <p className="text-xs text-stone-500 mb-4">Where your time has gone over the last 2 weeks</p>
+      <div className="rounded-3xl bg-white dark:bg-stone-900 border border-stone-200/60 dark:border-stone-800 p-6">
+        <h3 className="text-lg font-semibold text-stone-800 dark:text-stone-100 mb-1">Minutes by category</h3>
+        <p className="text-xs text-stone-500 dark:text-stone-400 mb-4">Where your time has gone over the last 2 weeks</p>
         <div className="space-y-2">
           {Object.entries(data.minutesByCategory)
             .sort(([, a]: any, [, b]: any) => b - a)
@@ -2278,35 +2278,35 @@ function InsightsView() {
               const pct = (minutes / maxCat) * 100
               return (
                 <div key={cat} className="flex items-center gap-3">
-                  <span className="text-xs w-20 shrink-0 flex items-center gap-1 text-stone-600">
+                  <span className="text-xs w-20 shrink-0 flex items-center gap-1 text-stone-600 dark:text-stone-300">
                     <span>{meta.emoji}</span>
                     {meta.label}
                   </span>
-                  <div className="flex-1 h-3 rounded-full bg-stone-100 overflow-hidden">
+                  <div className="flex-1 h-3 rounded-full bg-stone-100 dark:bg-stone-800 overflow-hidden">
                     <div
                       className={`h-full ${meta.dot}`}
                       style={{ width: `${pct}%` }}
                     />
                   </div>
-                  <span className="text-xs text-stone-500 w-16 text-right">
+                  <span className="text-xs text-stone-500 dark:text-stone-400 w-16 text-right">
                     {formatDuration(minutes)}
                   </span>
                 </div>
               )
             })}
           {Object.keys(data.minutesByCategory).length === 0 && (
-            <p className="text-sm text-stone-400">No data yet — start logging your days.</p>
+            <p className="text-sm text-stone-400 dark:text-stone-500">No data yet — start logging your days.</p>
           )}
         </div>
       </div>
 
-      <div className="rounded-3xl bg-white border border-stone-200/60 p-6">
-        <h3 className="text-lg font-semibold text-stone-800 mb-1">Daily healing minutes</h3>
-        <p className="text-xs text-stone-500 mb-4">
+      <div className="rounded-3xl bg-white dark:bg-stone-900 border border-stone-200/60 dark:border-stone-800 p-6">
+        <h3 className="text-lg font-semibold text-stone-800 dark:text-stone-100 mb-1">Daily healing minutes</h3>
+        <p className="text-xs text-stone-500 dark:text-stone-400 mb-4">
           Time you marked as moving you <em>toward</em> healing, per day
         </p>
         {chartDays.every((d) => d.healingMinutes === 0) ? (
-          <p className="text-sm text-stone-400">
+          <p className="text-sm text-stone-400 dark:text-stone-500">
             No healing minutes logged yet — when you finish an activity, mark it as moving you
             toward healing.
           </p>
@@ -2324,7 +2324,7 @@ function InsightsView() {
                     style={{ height: `${h}px` }}
                     title={`${d.date}: ${d.healingMinutes} min toward healing`}
                   />
-                  <span className="text-[9px] text-stone-400 tabular-nums whitespace-nowrap">
+                  <span className="text-[9px] text-stone-400 dark:text-stone-500 tabular-nums whitespace-nowrap">
                     {d.date.slice(5)}
                   </span>
                 </div>
@@ -2334,9 +2334,9 @@ function InsightsView() {
         )}
       </div>
 
-      <div className="rounded-3xl bg-white border border-stone-200/60 p-6">
-        <h3 className="text-lg font-semibold text-stone-800 mb-1">Healing impact</h3>
-        <p className="text-xs text-stone-500 mb-4">How often activities have moved you toward (or away from) healing</p>
+      <div className="rounded-3xl bg-white dark:bg-stone-900 border border-stone-200/60 dark:border-stone-800 p-6">
+        <h3 className="text-lg font-semibold text-stone-800 dark:text-stone-100 mb-1">Healing impact</h3>
+        <p className="text-xs text-stone-500 dark:text-stone-400 mb-4">How often activities have moved you toward (or away from) healing</p>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {HEALING_IMPACT_LIST.map((k) => {
             const h = HEALING_IMPACT[k]
@@ -2352,14 +2352,14 @@ function InsightsView() {
         </div>
       </div>
 
-      <div className="rounded-3xl bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-200 p-6">
+      <div className="rounded-3xl bg-gradient-to-br from-emerald-50 dark:from-emerald-950/40 to-teal-50 dark:to-teal-950/40 border border-emerald-200 dark:border-emerald-800 p-6">
         <div className="flex items-start gap-3">
           <div className="w-10 h-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center shrink-0">
             <TrendingUp className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="font-semibold text-stone-800">A gentle nudge</h3>
-            <p className="text-sm text-stone-600 mt-1">
+            <h3 className="font-semibold text-stone-800 dark:text-stone-100">A gentle nudge</h3>
+            <p className="text-sm text-stone-600 dark:text-stone-300 mt-1">
               {data.healingMinutes === 0
                 ? 'No healing minutes logged yet. Even five minutes of mindful breathing counts — start small.'
                 : `You've logged ${formatDuration(data.healingMinutes)} that moved you toward healing in the last 14 days. Be tender with yourself.`}
@@ -2479,7 +2479,7 @@ function EndOfDayReflectionModal({
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-4">
-      <div className="bg-gradient-to-b from-indigo-50/30 to-white rounded-3xl w-full max-w-lg shadow-xl max-h-[90vh] overflow-y-auto">
+      <div className="bg-gradient-to-b from-indigo-50/30 dark:from-indigo-950/40 to-white dark:to-stone-950 rounded-3xl w-full max-w-lg shadow-xl max-h-[90vh] overflow-y-auto">
         <div className="p-6 bg-gradient-to-br from-indigo-500 to-violet-500 text-white rounded-t-3xl">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -2501,28 +2501,28 @@ function EndOfDayReflectionModal({
 
         <div className="p-6 space-y-5">
           {loading ? (
-            <p className="text-center text-stone-400 text-sm py-8">Loading your day…</p>
+            <p className="text-center text-stone-400 dark:text-stone-500 text-sm py-8">Loading your day…</p>
           ) : (
             <>
               {/* Day summary */}
               <div className="grid grid-cols-3 gap-3">
-                <div className="rounded-2xl bg-emerald-50 p-3 text-center border border-emerald-100">
-                  <div className="text-2xl font-bold text-emerald-700">{healingMinutes}</div>
-                  <div className="text-xs text-emerald-600 mt-0.5">healing minutes</div>
+                <div className="rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 p-3 text-center border border-emerald-100 dark:border-emerald-900">
+                  <div className="text-2xl font-bold text-emerald-700 dark:text-emerald-400">{healingMinutes}</div>
+                  <div className="text-xs text-emerald-600 dark:text-emerald-400 mt-0.5">healing minutes</div>
                 </div>
-                <div className="rounded-2xl bg-stone-50 p-3 text-center border border-stone-100">
-                  <div className="text-2xl font-bold text-stone-700">{completed.length}</div>
-                  <div className="text-xs text-stone-500 mt-0.5">completed</div>
+                <div className="rounded-2xl bg-stone-50 dark:bg-stone-800/60 p-3 text-center border border-stone-100 dark:border-stone-800">
+                  <div className="text-2xl font-bold text-stone-700 dark:text-stone-200">{completed.length}</div>
+                  <div className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">completed</div>
                 </div>
-                <div className="rounded-2xl bg-sky-50 p-3 text-center border border-sky-100">
-                  <div className="text-2xl font-bold text-sky-700">{plannedRemaining.length}</div>
-                  <div className="text-xs text-sky-600 mt-0.5">still planned</div>
+                <div className="rounded-2xl bg-sky-50 dark:bg-sky-950/40 p-3 text-center border border-sky-100">
+                  <div className="text-2xl font-bold text-sky-700 dark:text-sky-400">{plannedRemaining.length}</div>
+                  <div className="text-xs text-sky-600 dark:text-sky-400 mt-0.5">still planned</div>
                 </div>
               </div>
 
               {/* Activity recap */}
               {activities.length === 0 ? (
-                <p className="text-sm text-stone-500 text-center py-4">
+                <p className="text-sm text-stone-500 dark:text-stone-400 text-center py-4">
                   Nothing was logged today. That's okay too — rest is part of healing.
                 </p>
               ) : (
@@ -2535,13 +2535,13 @@ function EndOfDayReflectionModal({
                     return (
                       <div
                         key={a.id}
-                        className="flex items-center gap-2 text-sm py-1.5 px-2 rounded-lg bg-white border border-stone-100"
+                        className="flex items-center gap-2 text-sm py-1.5 px-2 rounded-lg bg-white dark:bg-stone-900 border border-stone-100 dark:border-stone-800"
                       >
                         <span className={`w-1.5 h-1.5 rounded-full ${cat.dot} shrink-0`} />
-                        <span className="flex-1 truncate text-stone-700">{a.title}</span>
+                        <span className="flex-1 truncate text-stone-700 dark:text-stone-200">{a.title}</span>
                         {h && <span className="text-xs">{h.emoji}</span>}
                         {a.durationMin != null && a.durationMin > 0 && (
-                          <span className="text-xs text-stone-400">
+                          <span className="text-xs text-stone-400 dark:text-stone-500">
                             {formatDuration(a.durationMin)}
                           </span>
                         )}
@@ -2549,7 +2549,7 @@ function EndOfDayReflectionModal({
                     )
                   })}
                   {activities.length > 10 && (
-                    <p className="text-xs text-stone-400 text-center pt-1">
+                    <p className="text-xs text-stone-400 dark:text-stone-500 text-center pt-1">
                       +{activities.length - 10} more
                     </p>
                   )}
@@ -2558,7 +2558,7 @@ function EndOfDayReflectionModal({
 
               {/* Overall reflection */}
               <div>
-                <label className="text-sm font-medium text-stone-700">
+                <label className="text-sm font-medium text-stone-700 dark:text-stone-200">
                   Overall, did today move you toward healing?
                 </label>
                 <div className="grid grid-cols-4 gap-2 mt-2">
@@ -2575,7 +2575,7 @@ function EndOfDayReflectionModal({
                         className={`flex flex-col items-center gap-1 px-2 py-2 rounded-xl border text-xs font-medium transition ${
                           selected
                             ? `${h.chip} ring-2 ring-offset-1 ring-stone-300`
-                            : 'border-stone-200 text-stone-600 hover:bg-stone-50'
+                            : 'border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800'
                         }`}
                       >
                         <span className="text-xl">{h.emoji}</span>
@@ -2587,7 +2587,7 @@ function EndOfDayReflectionModal({
               </div>
 
               <div>
-                <label className="text-sm font-medium text-stone-700">
+                <label className="text-sm font-medium text-stone-700 dark:text-stone-200">
                   A gentle note to your future self (optional)
                 </label>
                 <textarea
@@ -2595,19 +2595,19 @@ function EndOfDayReflectionModal({
                   onChange={(e) => setOverallNote(e.target.value)}
                   rows={3}
                   placeholder="What do you want to remember about today? What did you notice? What might you try tomorrow?"
-                  className="mt-2 w-full rounded-xl border border-stone-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 resize-none"
+                  className="mt-2 w-full rounded-xl border border-stone-200 dark:border-stone-700 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 resize-none"
                 />
               </div>
 
               {saved ? (
-                <div className="text-center text-emerald-600 font-medium py-4">
+                <div className="text-center text-emerald-600 dark:text-emerald-400 font-medium py-4">
                   🌙 Saved. Rest well.
                 </div>
               ) : (
                 <div className="flex gap-2 pt-2">
                   <button
                     onClick={onClose}
-                    className="px-4 py-2.5 rounded-xl border border-stone-200 text-stone-600 hover:bg-stone-50"
+                    className="px-4 py-2.5 rounded-xl border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800"
                   >
                     Not now
                   </button>
@@ -2620,7 +2620,7 @@ function EndOfDayReflectionModal({
                 </div>
               )}
 
-              <p className="text-xs text-stone-400 text-center">
+              <p className="text-xs text-stone-400 dark:text-stone-500 text-center">
                 You can also revisit this reflection any time from Insights → Healing impact.
               </p>
             </>

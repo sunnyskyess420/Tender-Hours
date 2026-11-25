@@ -32,7 +32,7 @@ import {
 } from '@/lib/weekly-reflection'
 
 const inputCls =
-  'w-full rounded-xl border border-stone-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 resize-none'
+  'w-full rounded-xl border border-stone-200 dark:border-stone-700 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 dark:focus:ring-emerald-700 resize-none'
 
 function formatWhen(iso: string): string {
   return new Date(iso).toLocaleString([], {
@@ -218,22 +218,22 @@ export function JournalSection() {
     <>
       <section>
         <div className="flex items-center justify-between gap-3 mb-3">
-          <h3 className="flex items-center gap-2 text-sm font-semibold text-stone-500 uppercase tracking-wide">
+          <h3 className="flex items-center gap-2 text-sm font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wide">
             <NotebookPen className="w-4 h-4" />
             Journal
           </h3>
           <button
             onClick={openMemory}
-            className="text-xs text-emerald-600 hover:text-emerald-700 font-medium"
+            className="text-xs text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 font-medium"
           >
             AI memory
           </button>
         </div>
 
         {/* Write box */}
-        <div className="rounded-2xl border border-stone-200/60 bg-white p-4">
+        <div className="rounded-2xl border border-stone-200/60 dark:border-stone-800 bg-white dark:bg-stone-900 p-4">
           <textarea
-            className={`${inputCls} min-h-[110px] bg-stone-50/50`}
+            className={`${inputCls} min-h-[110px] bg-stone-50/50 dark:bg-stone-800/50`}
             placeholder="What's on your mind? The AI will gently scan for thinking patterns when you save."
             value={text}
             onChange={(e) => setText(e.target.value)}
@@ -241,12 +241,12 @@ export function JournalSection() {
             maxLength={4000}
           />
           <div className="mt-3 flex items-center justify-between gap-2">
-            <label className="flex items-center gap-1.5 text-xs text-stone-500 cursor-pointer">
+            <label className="flex items-center gap-1.5 text-xs text-stone-500 dark:text-stone-400 cursor-pointer">
               <input
                 type="checkbox"
                 checked={skipScan}
                 onChange={(e) => setSkipScan(e.target.checked)}
-                className="h-3.5 w-3.5 rounded border-stone-300 accent-emerald-500"
+                className="h-3.5 w-3.5 rounded border-stone-300 dark:border-stone-600 accent-emerald-500"
               />
               Skip AI scan (just save it)
             </label>
@@ -273,9 +273,9 @@ export function JournalSection() {
         {/* Entries */}
         <div className="mt-5">
           {loadingEntries ? (
-            <p className="text-xs text-stone-400">Loading entries…</p>
+            <p className="text-xs text-stone-400 dark:text-stone-500">Loading entries…</p>
           ) : entries.length === 0 ? (
-            <p className="text-xs text-stone-400">
+            <p className="text-xs text-stone-400 dark:text-stone-500">
               No journal entries yet. Whatever&apos;s on your mind — it&apos;s a good place to put it.
             </p>
           ) : (
@@ -309,7 +309,7 @@ export function JournalSection() {
 
           <div className="min-h-0 flex-1 overflow-y-auto px-4">
             <textarea
-              className="w-full min-h-[240px] rounded-xl border border-stone-200 px-3 py-2 font-mono text-xs focus:outline-none focus:ring-2 focus:ring-emerald-300 resize-none"
+              className="w-full min-h-[240px] rounded-xl border border-stone-200 dark:border-stone-700 px-3 py-2 font-mono text-xs focus:outline-none focus:ring-2 focus:ring-emerald-300 dark:focus:ring-emerald-700 resize-none"
               value={memoryDraft}
               onChange={(e) => setMemoryDraft(e.target.value)}
             />
@@ -317,7 +317,7 @@ export function JournalSection() {
 
           <div className="p-4 flex gap-2">
             <button
-              className="px-4 py-2.5 rounded-xl border border-stone-200 text-stone-600 hover:bg-stone-50 transition text-sm"
+              className="px-4 py-2.5 rounded-xl border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800 transition text-sm"
               onClick={() => {
                 setMemoryDraft(DEFAULT_MEMORY)
                 toast({ title: 'Reset to default. Tap Save to apply.' })
@@ -326,7 +326,7 @@ export function JournalSection() {
               Reset
             </button>
             <button
-              className="flex-1 px-4 py-2.5 rounded-xl border border-stone-200 text-stone-600 hover:bg-stone-50 transition text-sm"
+              className="flex-1 px-4 py-2.5 rounded-xl border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800 transition text-sm"
               onClick={() => setMemoryOpen(false)}
             >
               Cancel
@@ -339,7 +339,7 @@ export function JournalSection() {
             </button>
           </div>
 
-          <p className="px-4 pb-4 text-center text-xs text-stone-400">
+          <p className="px-4 pb-4 text-center text-xs text-stone-400 dark:text-stone-500">
             Changes apply to new journal scans. Past entries aren&apos;t re-scanned
             automatically.
           </p>
@@ -364,38 +364,38 @@ function EntryCard({
   const reframe = parseReframe(entry)
 
   return (
-    <div className="rounded-2xl border border-stone-200/60 bg-white px-4 py-3">
+    <div className="rounded-2xl border border-stone-200/60 dark:border-stone-800 bg-white dark:bg-stone-900 px-4 py-3">
       <div className="flex items-baseline justify-between gap-2">
-        <p className="text-xs text-stone-400">{formatWhen(entry.createdAt)}</p>
+        <p className="text-xs text-stone-400 dark:text-stone-500">{formatWhen(entry.createdAt)}</p>
         <button
           onClick={onDelete}
           aria-label="Delete journal entry"
           title="Delete"
-          className="rounded-md p-1 text-stone-300 transition hover:bg-rose-50 hover:text-rose-500 focus:outline-none focus:ring-2 focus:ring-rose-200"
+          className="rounded-md p-1 text-stone-300 dark:text-stone-600 transition hover:bg-rose-50 hover:text-rose-500 focus:outline-none focus:ring-2 focus:ring-rose-200 dark:focus:ring-rose-800"
         >
           <Trash2 className="w-3.5 h-3.5" />
         </button>
       </div>
 
-      <p className="mt-1 whitespace-pre-wrap break-words text-sm text-stone-700">
+      <p className="mt-1 whitespace-pre-wrap break-words text-sm text-stone-700 dark:text-stone-200">
         {entry.text}
       </p>
 
       {status === 'pending' && (
-        <div className="mt-2 flex items-center gap-2 rounded-xl border border-dashed border-stone-200 bg-stone-50/60 px-3 py-2 text-xs text-stone-400">
+        <div className="mt-2 flex items-center gap-2 rounded-xl border border-dashed border-stone-200 dark:border-stone-700 bg-stone-50/60 dark:bg-stone-800/60 px-3 py-2 text-xs text-stone-400 dark:text-stone-500">
           <Loader2 className="w-3.5 h-3.5 animate-spin" />
           Scanning for thinking patterns…
         </div>
       )}
 
       {status === 'error' && (
-        <div className="mt-2 rounded-xl border border-dashed border-rose-200 bg-rose-50/50 px-3 py-2 text-xs text-stone-500">
+        <div className="mt-2 rounded-xl border border-dashed border-rose-200 dark:border-rose-900 bg-rose-50/50 dark:bg-rose-950/30 px-3 py-2 text-xs text-stone-500 dark:text-stone-400">
           {entry.reframeError && /not configured/i.test(entry.reframeError)
             ? 'AI isn\u2019t connected yet — it needs a key on the host. Your entry is still saved.'
             : entry.reframeError || 'Couldn\u2019t reach the AI just now. The entry is still saved.'}
           <button
             onClick={onRetry}
-            className="mt-1.5 block text-xs font-medium text-emerald-600 hover:text-emerald-700"
+            className="mt-1.5 block text-xs font-medium text-emerald-600 dark:text-emerald-400 hover:text-emerald-700"
           >
             Try scanning again
           </button>
@@ -403,15 +403,15 @@ function EntryCard({
       )}
 
       {status === 'done' && reframe && reframe.pattern !== 'none' && (
-        <div className="mt-2 rounded-xl border-l-2 border-l-emerald-400 bg-emerald-50/60 px-3 py-2">
-          <p className="text-xs font-medium text-emerald-700">
+        <div className="mt-2 rounded-xl border-l-2 border-l-emerald-400 bg-emerald-50/60 dark:bg-emerald-950/40 px-3 py-2">
+          <p className="text-xs font-medium text-emerald-700 dark:text-emerald-400">
             Pattern flagged: {humanizePattern(reframe.pattern)}
           </p>
           {reframe.summary && (
-            <p className="mt-0.5 text-xs text-stone-500">{reframe.summary}</p>
+            <p className="mt-0.5 text-xs text-stone-500 dark:text-stone-400">{reframe.summary}</p>
           )}
           {reframe.suggestion && (
-            <p className="mt-1.5 text-sm italic text-stone-700">
+            <p className="mt-1.5 text-sm italic text-stone-700 dark:text-stone-200">
               &ldquo;{reframe.suggestion}&rdquo;
             </p>
           )}
@@ -419,7 +419,7 @@ function EntryCard({
       )}
 
       {status === 'done' && reframe && reframe.pattern === 'none' && (
-        <p className="mt-2 text-xs text-stone-400">
+        <p className="mt-2 text-xs text-stone-400 dark:text-stone-500">
           {reframe.summary ? reframe.summary : 'No pattern flagged.'}
         </p>
       )}
@@ -443,45 +443,45 @@ function WeeklyCard({
   const latest = reflections[0] ?? null
 
   return (
-    <div className="rounded-2xl border border-stone-200/60 bg-white p-4">
+    <div className="rounded-2xl border border-stone-200/60 dark:border-stone-800 bg-white dark:bg-stone-900 p-4">
       <div className="flex items-baseline justify-between gap-2">
-        <p className="text-xs font-semibold text-stone-500 uppercase tracking-wide">
+        <p className="text-xs font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wide">
           Weekly reflection
         </p>
         {latest && (
-          <span className="text-[10px] text-stone-400">
+          <span className="text-[10px] text-stone-400 dark:text-stone-500">
             last: {formatDay(latest.generatedAt)}
           </span>
         )}
       </div>
 
       {busy ? (
-        <div className="mt-2 flex items-center gap-2 text-sm text-stone-500">
+        <div className="mt-2 flex items-center gap-2 text-sm text-stone-500 dark:text-stone-400">
           <Loader2 className="w-4 h-4 animate-spin" />
           Reading your week…
         </div>
       ) : error ? (
         <div className="mt-2">
-          <p className="text-sm text-stone-600">
+          <p className="text-sm text-stone-600 dark:text-stone-300">
             {/not configured/i.test(error)
               ? 'The AI isn\u2019t connected yet — add a key on the host, then try again.'
               : error}
           </p>
           <button
             onClick={onGenerate}
-            className="mt-2 text-xs font-medium text-emerald-600 hover:text-emerald-700"
+            className="mt-2 text-xs font-medium text-emerald-600 dark:text-emerald-400 hover:text-emerald-700"
           >
             Try again
           </button>
         </div>
       ) : latest ? (
         <>
-          <p className="mt-1 text-xs text-stone-400">Week of {formatWeek(latest.weekOf)}</p>
+          <p className="mt-1 text-xs text-stone-400 dark:text-stone-500">Week of {formatWeek(latest.weekOf)}</p>
 
           {latest.patterns.length > 0 && (
             <ul className="mt-2 ml-4 list-disc space-y-1">
               {latest.patterns.map((p, i) => (
-                <li key={i} className="text-sm text-stone-700">
+                <li key={i} className="text-sm text-stone-700 dark:text-stone-200">
                   {p}
                 </li>
               ))}
@@ -489,7 +489,7 @@ function WeeklyCard({
           )}
 
           {latest.moodSummary && (
-            <p className="mt-2 text-sm text-stone-600">{latest.moodSummary}</p>
+            <p className="mt-2 text-sm text-stone-600 dark:text-stone-300">{latest.moodSummary}</p>
           )}
 
           {latest.topReframes.length > 0 && (
@@ -497,7 +497,7 @@ function WeeklyCard({
               {latest.topReframes.map((r, i) => (
                 <span
                   key={i}
-                  className="rounded-full bg-emerald-50 border border-emerald-100 px-2 py-0.5 text-xs text-emerald-700"
+                  className="rounded-full bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900 px-2 py-0.5 text-xs text-emerald-700 dark:text-emerald-400"
                 >
                   {humanizePattern(r.pattern)} &times; {r.count}
                 </span>
@@ -506,32 +506,32 @@ function WeeklyCard({
           )}
 
           {latest.suggestion && (
-            <div className="mt-3 rounded-xl border-l-2 border-l-emerald-400 bg-emerald-50/50 px-3 py-2">
-              <p className="text-[10px] uppercase tracking-wider text-emerald-700">
+            <div className="mt-3 rounded-xl border-l-2 border-l-emerald-400 bg-emerald-50/50 dark:bg-emerald-950/30 px-3 py-2">
+              <p className="text-[10px] uppercase tracking-wider text-emerald-700 dark:text-emerald-400">
                 One small thing to try
               </p>
-              <p className="mt-1 text-sm italic text-stone-700">{latest.suggestion}</p>
+              <p className="mt-1 text-sm italic text-stone-700 dark:text-stone-200">{latest.suggestion}</p>
             </div>
           )}
 
           <button
             onClick={onGenerate}
-            className="mt-3 text-xs font-medium text-emerald-600 hover:text-emerald-700"
+            className="mt-3 text-xs font-medium text-emerald-600 dark:text-emerald-400 hover:text-emerald-700"
           >
             Regenerate this week
           </button>
 
           {reflections.length > 1 && (
-            <details className="mt-3 border-t border-stone-100 pt-3">
-              <summary className="cursor-pointer text-xs text-stone-400 uppercase tracking-wider">
+            <details className="mt-3 border-t border-stone-100 dark:border-stone-800 pt-3">
+              <summary className="cursor-pointer text-xs text-stone-400 dark:text-stone-500 uppercase tracking-wider">
                 Past reflections ({reflections.length - 1})
               </summary>
               <div className="mt-2 space-y-2">
                 {reflections.slice(1).map((r) => (
-                  <div key={r.weekOf} className="rounded-xl bg-stone-50 px-3 py-2">
-                    <p className="text-xs text-stone-400">Week of {formatWeek(r.weekOf)}</p>
+                  <div key={r.weekOf} className="rounded-xl bg-stone-50 dark:bg-stone-800/60 px-3 py-2">
+                    <p className="text-xs text-stone-400 dark:text-stone-500">Week of {formatWeek(r.weekOf)}</p>
                     {r.suggestion && (
-                      <p className="mt-1 text-sm italic text-stone-600">{r.suggestion}</p>
+                      <p className="mt-1 text-sm italic text-stone-600 dark:text-stone-300">{r.suggestion}</p>
                     )}
                   </div>
                 ))}
@@ -541,7 +541,7 @@ function WeeklyCard({
         </>
       ) : (
         <>
-          <p className="mt-1 text-sm text-stone-500">
+          <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">
             Once a week, get a gentle one-paragraph reflection on your journal, check-ins
             and activities from the past 7 days — plus one small thing to try.
           </p>

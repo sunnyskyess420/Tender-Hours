@@ -42,7 +42,7 @@ export function PWAInstallBanner() {
         </div>
         <button
           onClick={promptInstall}
-          className="px-3 py-2 rounded-lg bg-white text-emerald-700 hover:bg-emerald-50 text-xs font-semibold shrink-0"
+          className="px-3 py-2 rounded-lg bg-white dark:bg-stone-900 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 text-xs font-semibold shrink-0"
         >
           Install
         </button>

@@ -17,7 +17,7 @@ import { api } from '@/lib/api'
 import { CueCard, MAX_CARDS, STARTER_CARDS } from '@/lib/cue-cards'
 
 const inputCls =
-  'w-full rounded-xl border border-stone-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 resize-none'
+  'w-full rounded-xl border border-stone-200 dark:border-stone-700 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 dark:focus:ring-emerald-700 resize-none'
 
 export function CueCardsSection() {
   const { toast } = useToast()
@@ -111,34 +111,34 @@ export function CueCardsSection() {
     <>
       <section>
         <div className="flex items-center justify-between gap-3 mb-3">
-          <h3 className="flex items-center gap-2 text-sm font-semibold text-stone-500 uppercase tracking-wide">
+          <h3 className="flex items-center gap-2 text-sm font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wide">
             <StickyNote className="w-4 h-4" />
             Cue cards
           </h3>
           <div className="flex items-center gap-3 shrink-0">
             <button
               onClick={() => setStartersOpen(true)}
-              className="text-xs text-emerald-600 hover:text-emerald-700 font-medium"
+              className="text-xs text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 font-medium"
             >
               Browse starters
             </button>
             <button
               onClick={() => openEditor(null)}
               disabled={full}
-              className="text-xs text-emerald-600 hover:text-emerald-700 font-medium disabled:opacity-40"
+              className="text-xs text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 font-medium disabled:opacity-40"
             >
               + Add card
             </button>
           </div>
         </div>
-        <p className="text-xs text-stone-500 mb-3">
+        <p className="text-xs text-stone-500 dark:text-stone-400 mb-3">
           Short reminders for the hard moments. Write your own, or pick from{' '}
           {STARTER_CARDS.length} ready-made starters.
         </p>
 
         {cards.length === 0 ? (
-          <div className="rounded-2xl bg-white border border-dashed border-stone-200 p-6 text-center">
-            <p className="text-sm text-stone-500">
+          <div className="rounded-2xl bg-white dark:bg-stone-900 border border-dashed border-stone-200 dark:border-stone-700 p-6 text-center">
+            <p className="text-sm text-stone-500 dark:text-stone-400">
               No cue cards yet. Tap &ldquo;Browse starters&rdquo; or &ldquo;Add card&rdquo; to
               write one.
             </p>
@@ -149,10 +149,10 @@ export function CueCardsSection() {
               <button
                 key={c.id}
                 onClick={() => openEditor(c)}
-                className="w-full flex items-center gap-3 rounded-2xl border border-stone-200/60 bg-white px-4 py-3 text-left transition hover:bg-emerald-50/50"
+                className="w-full flex items-center gap-3 rounded-2xl border border-stone-200/60 dark:border-stone-800 bg-white dark:bg-stone-900 px-4 py-3 text-left transition hover:bg-emerald-50/50"
               >
-                <p className="flex-1 text-sm italic text-stone-700">{c.text}</p>
-                <Pencil className="w-3.5 h-3.5 text-stone-300 shrink-0" />
+                <p className="flex-1 text-sm italic text-stone-700 dark:text-stone-200">{c.text}</p>
+                <Pencil className="w-3.5 h-3.5 text-stone-300 dark:text-stone-600 shrink-0" />
               </button>
             ))}
           </div>
@@ -186,12 +186,12 @@ export function CueCardsSection() {
                     className={
                       'w-full rounded-2xl border px-4 py-3 text-left transition ' +
                       (disabled
-                        ? 'border-stone-200/60 bg-stone-50/50'
-                        : 'border-stone-200/60 bg-white hover:bg-emerald-50/50')
+                        ? 'border-stone-200/60 dark:border-stone-800 bg-stone-50/50 dark:bg-stone-800/50'
+                        : 'border-stone-200/60 dark:border-stone-800 bg-white dark:bg-stone-900 hover:bg-emerald-50/50')
                     }
                   >
-                    <p className="text-sm italic text-stone-700">{s.text}</p>
-                    <p className="mt-1 text-[10px] uppercase tracking-wider text-stone-400">
+                    <p className="text-sm italic text-stone-700 dark:text-stone-200">{s.text}</p>
+                    <p className="mt-1 text-[10px] uppercase tracking-wider text-stone-400 dark:text-stone-500">
                       {added ? 'Added' : full ? 'Deck is full' : 'Tap to add'}
                     </p>
                   </button>
@@ -202,7 +202,7 @@ export function CueCardsSection() {
 
           <div className="p-4">
             <button
-              className="w-full px-4 py-2.5 rounded-xl border border-stone-200 text-stone-600 hover:bg-stone-50 transition"
+              className="w-full px-4 py-2.5 rounded-xl border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800 transition"
               onClick={() => setStartersOpen(false)}
             >
               Done
@@ -229,14 +229,14 @@ export function CueCardsSection() {
 
           <div className="px-4">
             <textarea
-              className={`${inputCls} min-h-[120px] bg-stone-50/50`}
+              className={`${inputCls} min-h-[120px] bg-stone-50/50 dark:bg-stone-800/50`}
               placeholder="e.g. I am here, in this room, in this body, right now."
               value={draft}
               onChange={(e) => setDraft(e.target.value)}
               rows={4}
               maxLength={200}
             />
-            <p className="mt-2 text-xs text-stone-400">
+            <p className="mt-2 text-xs text-stone-400 dark:text-stone-500">
               {draft.length}/200 characters. Keep it short so it sticks.
             </p>
           </div>
@@ -246,13 +246,13 @@ export function CueCardsSection() {
               <button
                 onClick={deleteCard}
                 disabled={busy}
-                className="px-4 py-2.5 rounded-xl border border-stone-200 text-rose-500 hover:bg-rose-50 disabled:opacity-60 transition"
+                className="px-4 py-2.5 rounded-xl border border-stone-200 dark:border-stone-700 text-rose-500 dark:text-rose-400 hover:bg-rose-50 disabled:opacity-60 transition"
               >
                 Delete
               </button>
             )}
             <button
-              className="flex-1 px-4 py-2.5 rounded-xl border border-stone-200 text-stone-600 hover:bg-stone-50 transition"
+              className="flex-1 px-4 py-2.5 rounded-xl border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800 transition"
               onClick={() => {
                 setEditorOpen(false)
                 setEditing(null)
