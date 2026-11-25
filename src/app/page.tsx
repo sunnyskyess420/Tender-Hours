@@ -52,7 +52,7 @@ import {
   decodeRule,
   todayISODate,
   nowISO,
-  isoFromLocal,
+  isoFromLocalSafe,
   timeHHMMFromISO,
   formatTime,
   formatDuration,
@@ -1047,10 +1047,14 @@ function QuickLogCard({ onSaved }: { onSaved: () => void }) {
 
   // Work out the finish from the two times — no arithmetic for the user. If the
   // finish looks earlier than the start, we assume it ran past midnight.
+  // Returns null while either field is empty or invalid (time inputs can be
+  // cleared mid-edit — don't crash the render on it).
   function computeTimes() {
-    const startISO = isoFromLocal(today, startTime)
+    const startISO = isoFromLocalSafe(today, startTime)
+    const endLocal = isoFromLocalSafe(today, finishTime)
+    if (!startISO || !endLocal) return null
     const startMs = new Date(startISO).getTime()
-    let endMs = new Date(isoFromLocal(today, finishTime)).getTime()
+    let endMs = new Date(endLocal).getTime()
     if (endMs <= startMs) endMs += 24 * 60 * 60 * 1000
     return {
       startISO,
@@ -1059,11 +1063,12 @@ function QuickLogCard({ onSaved }: { onSaved: () => void }) {
     }
   }
 
-  const { durationMin } = computeTimes()
+  const times = computeTimes()
+  const durationMin = times?.durationMin ?? null
 
   async function save() {
-    if (!title.trim()) return
-    const { startISO, endISO, durationMin } = computeTimes()
+    if (!title.trim() || !times) return
+    const { startISO, endISO, durationMin } = times
     await api('/api/activities', {
       method: 'POST',
       body: JSON.stringify({
@@ -1127,7 +1132,9 @@ function QuickLogCard({ onSaved }: { onSaved: () => void }) {
             onChange={(e) => setFinishTime(e.target.value)}
             className="mt-1 w-full rounded-xl border border-stone-200 dark:border-stone-700 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 dark:focus:ring-emerald-700"
           />
-          <p className="mt-1 text-xs text-stone-400 dark:text-stone-500">= {formatDuration(durationMin)} — no maths needed</p>
+          {durationMin !== null && (
+            <p className="mt-1 text-xs text-stone-400 dark:text-stone-500">= {formatDuration(durationMin)} — no maths needed</p>
+          )}
         </div>
         <div className="sm:col-span-2">
           <label className="text-xs uppercase tracking-wide text-stone-500 dark:text-stone-400 font-semibold">
@@ -1185,7 +1192,7 @@ function QuickLogCard({ onSaved }: { onSaved: () => void }) {
       </div>
       <button
         onClick={save}
-        disabled={!title.trim()}
+        disabled={!title.trim() || !times}
         className="mt-4 w-full px-4 py-3 rounded-xl bg-stone-800 hover:bg-stone-900 disabled:opacity-40 disabled:cursor-not-allowed text-white font-medium transition"
       >
         Save to today
@@ -1620,10 +1627,14 @@ function PlannedActivityForm({
   const [recurrenceRule, setRecurrenceRule] = useState<RecurrenceRule | null>(null)
 
   // Duration comes from the two times — no maths for the user.
+  // Returns null while either field is empty or invalid (time inputs can be
+  // cleared mid-edit — don't crash the render on it).
   function computeTimes() {
-    const startTime = isoFromLocal(date, time)
+    const startTime = isoFromLocalSafe(date, time)
+    const endLocal = isoFromLocalSafe(date, endTime)
+    if (!startTime || !endLocal) return null
     const startMs = new Date(startTime).getTime()
-    let endMs = new Date(isoFromLocal(date, endTime)).getTime()
+    let endMs = new Date(endLocal).getTime()
     if (endMs <= startMs) endMs += 24 * 60 * 60 * 1000
     return {
       startTime,
@@ -1632,11 +1643,12 @@ function PlannedActivityForm({
     }
   }
 
-  const { durationMin } = computeTimes()
+  const times = computeTimes()
+  const durationMin = times?.durationMin ?? null
 
   async function save() {
-    if (!title.trim()) return
-    const { startTime, endTime, durationMin } = computeTimes()
+    if (!title.trim() || !times) return
+    const { startTime, endTime, durationMin } = times
     await api('/api/activities', {
       method: 'POST',
       body: JSON.stringify({
@@ -1691,7 +1703,9 @@ function PlannedActivityForm({
             onChange={(e) => setEndTime(e.target.value)}
             className="mt-1 w-full rounded-xl border border-stone-200 dark:border-stone-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 dark:focus:ring-emerald-700"
           />
-          <p className="mt-1 text-xs text-stone-400 dark:text-stone-500">= {formatDuration(durationMin)}</p>
+          {durationMin !== null && (
+            <p className="mt-1 text-xs text-stone-400 dark:text-stone-500">= {formatDuration(durationMin)}</p>
+          )}
         </div>
       </div>
       <div>
@@ -1785,7 +1799,7 @@ function PlannedActivityForm({
         </button>
         <button
           onClick={save}
-          disabled={!title.trim()}
+          disabled={!title.trim() || !times}
           className="flex-1 px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 disabled:opacity-40 text-white font-medium"
         >
           Add to schedule
@@ -1810,11 +1824,14 @@ function EditDialog({
   const [category, setCategory] = useState<ActivityCategory>(a.category as ActivityCategory)
   const [date, setDate] = useState(a.date)
   const [time, setTime] = useState(timeHHMMFromISO(a.startTime))
-  const [endTime, setEndTime] = useState(() =>
-    a.endTime
-      ? timeHHMMFromISO(a.endTime)
-      : timeHHMMFromISO(new Date(new Date(a.startTime).getTime() + (a.durationMin ?? 30) * 60000).toISOString())
-  )
+  const [endTime, setEndTime] = useState(() => {
+    if (a.endTime) return timeHHMMFromISO(a.endTime)
+    const startMs = new Date(a.startTime).getTime()
+    const fallbackMs = Number.isNaN(startMs)
+      ? Date.now()
+      : startMs + (a.durationMin ?? 30) * 60000
+    return timeHHMMFromISO(new Date(fallbackMs).toISOString())
+  })
   const [healingImpact, setHealingImpact] = useState<
     'helped' | 'neutral' | 'hinder' | 'unsure' | null
   >((a.healingImpact as any) ?? null)
@@ -1827,10 +1844,14 @@ function EditDialog({
   const isTemplate = a.isRecurrenceTemplate
 
   // Duration comes from the two times — no maths for the user.
+  // Returns null while date/start/end is empty or invalid (the inputs can be
+  // cleared mid-edit — don't crash the render on it).
   function computeTimes() {
-    const startTime = isoFromLocal(date, time)
+    const startTime = isoFromLocalSafe(date, time)
+    const endLocal = isoFromLocalSafe(date, endTime)
+    if (!startTime || !endLocal) return null
     const startMs = new Date(startTime).getTime()
-    let endMs = new Date(isoFromLocal(date, endTime)).getTime()
+    let endMs = new Date(endLocal).getTime()
     if (endMs <= startMs) endMs += 24 * 60 * 60 * 1000
     return {
       startTime,
@@ -1839,10 +1860,12 @@ function EditDialog({
     }
   }
 
-  const { durationMin } = computeTimes()
+  const times = computeTimes()
+  const durationMin = times?.durationMin ?? null
 
   async function save() {
-    const { startTime, endTime: computedEnd, durationMin } = computeTimes()
+    if (!times) return
+    const { startTime, endTime: computedEnd, durationMin } = times
     const endTime = status === 'completed' ? computedEnd : null
     await api(`/api/activities/${a.id}`, {
       method: 'PATCH',
@@ -1931,7 +1954,9 @@ function EditDialog({
               />
             </div>
           </div>
-          <p className="text-xs text-stone-400 dark:text-stone-500">= {formatDuration(durationMin)}</p>
+          {durationMin !== null && (
+            <p className="text-xs text-stone-400 dark:text-stone-500">= {formatDuration(durationMin)}</p>
+          )}
           <div>
             <label className="text-xs uppercase tracking-wide text-stone-500 dark:text-stone-400 font-semibold">
               Category
@@ -2093,7 +2118,8 @@ function EditDialog({
           </button>
           <button
             onClick={save}
-            className="flex-1 px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-medium"
+            disabled={!times}
+            className="flex-1 px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 disabled:opacity-40 disabled:cursor-not-allowed text-white font-medium"
           >
             Save changes
           </button>

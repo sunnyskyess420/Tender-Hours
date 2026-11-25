@@ -221,14 +221,23 @@ export function nowISO(): string {
 
 export function isoFromLocal(date: string, timeHHMM: string): string {
   // date: YYYY-MM-DD, timeHHMM: HH:MM (24h, local) → ISO
-  const [h, m] = timeHHMM.split(':').map(Number)
-  const d = new Date(`${date}T00:00:00`)
-  d.setHours(h, m, 0, 0)
-  return d.toISOString()
+  const safe = isoFromLocalSafe(date, timeHHMM)
+  if (safe === null) throw new RangeError(`invalid local time: ${date} ${timeHHMM}`)
+  return safe
+}
+
+/** Same as isoFromLocal but returns null instead of throwing on bad input. */
+export function isoFromLocalSafe(date: string, timeHHMM: string): string | null {
+  const t = /^(\d{1,2}):(\d{2})/.exec(timeHHMM)
+  const d = /^(\d{4})-(\d{1,2})-(\d{1,2})$/.exec(date)
+  if (!t || !d) return null
+  const dt = new Date(+d[1], +d[2] - 1, +d[3], +t[1], +t[2], 0, 0)
+  return Number.isNaN(dt.getTime()) ? null : dt.toISOString()
 }
 
 export function timeHHMMFromISO(iso: string): string {
   const d = new Date(iso)
+  if (Number.isNaN(d.getTime())) return ''
   const h = String(d.getHours()).padStart(2, '0')
   const m = String(d.getMinutes()).padStart(2, '0')
   return `${h}:${m}`
